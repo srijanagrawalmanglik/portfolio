@@ -1,0 +1,715 @@
+{
+  "messages": [
+    {
+      "id": 1768189754448,
+      "name": "Rohit Kumar",
+      "email": "km.rohit2112@gmail.com",
+      "message": "Ja re laude",
+      "date": "1/12/2026",
+      "read": true
+    },
+    {
+      "id": 1765027345742,
+      "name": "Srijan Agrawal Manglik",
+      "email": "srijanagrawalmanglik@gmail.com",
+      "message": "HELLO FAM",
+      "date": "12/6/2025",
+      "read": true
+    }
+  ],
+  "content": {
+    "bio": "Financial Analyst & MBA Candidate at Delhi School of Economics with a strong background in IT (B.Tech). Specialized in FP&A, Financial Modeling, and Data Analytics.",
+    "resume": {
+      "experience": [
+        {
+          "role": "Financial Analyst",
+          "company": "ZenStreet.Ai",
+          "date": "Mar '24 – Aug '25",
+          "desc": "Built 12-month FP&A models, supporting strategic planning. Designed financial forecasts reducing CAC by 10% and improving budget variance reporting. Managed financial reporting and compliance."
+        },
+        {
+          "role": "Due Diligence Intern",
+          "company": "AKSK and Associates",
+          "date": "Jan '24 – Mar '24",
+          "desc": "Analyzed loan documents for improved credit assessment. Identified NPAs with 98% accuracy and automated due diligence boosting efficiency by 18%."
+        },
+        {
+          "role": "Analyst Intern",
+          "company": "Radiant Hunters",
+          "date": "Jul '23 – Dec '23",
+          "desc": "Developed financial models and KPI dashboards, improving forecasting accuracy by 12% and achieving a 15% increase in brand-driven revenue."
+        },
+        {
+          "role": "SQL Associate",
+          "company": "VITrendz",
+          "date": "Oct '22 - Apr '23",
+          "desc": "Directed the inception and execution of an SQL database-based simulation platform. Led troubleshooting efforts and implemented preventive measures."
+        },
+        {
+          "role": "Marketing Associate",
+          "company": "HEARTS CLUB VIT",
+          "date": "Jul '21 - Dec '21",
+          "desc": "Collaborated in organizing major events and identified new marketing channels, resulting in a 40% increase in engagement rate."
+        },
+        {
+          "role": "Technical Team Member",
+          "company": "SME VIT",
+          "date": "Dec '20 - Jun '21",
+          "desc": "Collaborated on technical projects involving Python and Arduino. Designed visually captivating posts and optimized social media strategy."
+        }
+      ],
+      "education": [
+        {
+          "degree": "MBA (Business Analytics)",
+          "institute": "Delhi School of Economics",
+          "year": "2025 - 2027",
+          "score": "Pursuing"
+        },
+        {
+          "degree": "B. Tech (IT)",
+          "institute": "Vellore Institute of Technology",
+          "year": "2019 - 2023",
+          "score": "77.40%"
+        },
+        {
+          "degree": "12th PCM",
+          "institute": "Delhi Public School",
+          "year": "2018 - 2019",
+          "score": "83.17%"
+        },
+        {
+          "degree": "10th",
+          "institute": "Delhi Public School",
+          "year": "2016 - 2017",
+          "score": "83.60%"
+        }
+      ],
+      "skills": [
+        "Financial Modelling",
+        "FP&A",
+        "Variance Analysis",
+        "Scenario & Sensitivity Analysis",
+        "Advanced Excel",
+        "Tableau",
+        "Regression Analysis",
+        "Market Research",
+        "Automation",
+        "Python",
+        "NumPy",
+        "Pandas",
+        "MySQL"
+      ],
+      "certifications": [
+        "Corporate Finance Foundations, LinkedIn (Apr '25)",
+        "AI Fundamentals, DataCamp (Apr '24)",
+        "Algorithmic Toolbox, Coursera (Sep '22)",
+        "DevOps on AWS Specialization, Coursera (May '22)",
+        "Object Oriented Programming in Java, Coursera (Apr '20)",
+        "Understanding Einstein: The Special Theory of Relativity, Coursera (Apr '20)",
+        "CAT 2024: 99.81%ile in QA, 95.70%ile in DILR"
+      ],
+      "projects": [
+        {
+          "title": "SQL Simulation Platform",
+          "desc": "Directed the execution of an SQL-based simulation for academic course selection at VITrendz.",
+          "tags": [
+            "SQL",
+            "Database Management",
+            "Leadership"
+          ]
+        },
+        {
+          "title": "FP&A Model for SaaS",
+          "desc": "Built a comprehensive 12-month financial model forecasting revenue streams and cash flow.",
+          "tags": [
+            "Excel",
+            "Finance",
+            "Forecasting"
+          ]
+        }
+      ]
+    },
+    "hero": {
+      "subtitle": "Business Analyst & MBA Candidate",
+      "title": "Precision in <br><span class=\"gradient-text\">Every Insight.</span>",
+      "desc": "Transforming data into actionable business insights through KPI dashboards, forecasting models, and performance analysis."
+    },
+    "about": {
+      "subtitle": "The Strategist",
+      "title": "Srijan Agrawal <br><span class=\"highlight\">Manglik</span>",
+      "bio": "Financial Analyst & MBA Candidate at Delhi School of Economics with a strong background in IT (B.Tech). Specialized in FP&A, Financial Modeling, and Data Analytics."
+    },
+    "certifications": [
+      {
+        "name": "KNIME Certification: L1 Examination",
+        "issuer": "KNIME",
+        "icon": "fa-solid fa-database",
+        "style": ""
+      },
+      {
+        "name": "Lean Six Sigma Green Belt",
+        "issuer": "KPMG",
+        "icon": "fa-solid fa-trophy",
+        "style": "border-color: rgba(212, 175, 55, 0.3); background: rgba(212, 175, 55, 0.05);"
+      },
+      {
+        "name": "Python Data Associate",
+        "issuer": "DataCamp",
+        "icon": "fa-brands fa-python",
+        "style": ""
+      },
+      {
+        "name": "Bloomberg Finance Fundamentals",
+        "issuer": "Bloomberg",
+        "icon": "fa-solid fa-sack-dollar",
+        "style": ""
+      },
+      {
+        "name": "CAT 2024: 99.81%ile (QA) & 95.70%ile (DILR)",
+        "issuer": "Quantitative & Reasoning Aptitude Excellence",
+        "icon": "fa-brands fa-python",
+        "style": ""
+      }
+    ]
+  },
+  "admin": {
+    "googleTokens": {
+      "access_token": "REDACTED",
+      "refresh_token": "REDACTED",
+      "scope": "https://www.googleapis.com/auth/calendar",
+      "token_type": "Bearer",
+      "refresh_token_expires_in": 604799,
+      "expiry_date": 1768759576743
+    },
+    "passwordHash": "$2b$10$t3hJNY/G7sFcnIup0fRCPefsL5FX2CYn4z/Na1tWUPjwFpcBQEVqC"
+  },
+  "attendance": [],
+  "tracker": {
+    "template": [
+      "MBA BA SEM II",
+      "CFA L1",
+      "Job Apply",
+      "Morning Run",
+      "Debug Habit",
+      "Modal Test Habit"
+    ],
+    "logs": {
+      "2026-01-15": {
+        "tasks": [
+          {
+            "name": "MBA BA SEM II",
+            "status": "executed"
+          },
+          {
+            "name": "CFA L1",
+            "status": "to-do"
+          },
+          {
+            "name": "Job Apply",
+            "status": "executed"
+          },
+          {
+            "name": "Test Task",
+            "status": "executed"
+          },
+          {
+            "name": "Morning Run",
+            "status": "executed"
+          }
+        ],
+        "score": 100
+      },
+      "2026-01-16": {
+        "tasks": [
+          {
+            "name": "MBA BA SEM II",
+            "status": "executed"
+          },
+          {
+            "name": "CFA L1",
+            "status": "executed"
+          },
+          {
+            "name": "Job Apply",
+            "status": "to-do"
+          },
+          {
+            "name": "Morning Run",
+            "status": "executed"
+          },
+          {
+            "name": "Modal Test Habit",
+            "status": "executed"
+          },
+          {
+            "name": "Debug Habit",
+            "status": "executed"
+          }
+        ],
+        "score": 83
+      },
+      "2026-01-17": {
+        "tasks": [
+          {
+            "name": "MBA BA SEM II",
+            "status": "executed"
+          },
+          {
+            "name": "CFA L1",
+            "status": "executed"
+          },
+          {
+            "name": "Job Apply",
+            "status": "executed"
+          },
+          {
+            "name": "Morning Run",
+            "status": "to-do"
+          },
+          {
+            "name": "Debug Habit",
+            "status": "to-do"
+          },
+          {
+            "name": "Modal Test Habit",
+            "status": "to-do"
+          }
+        ],
+        "score": 50
+      },
+      "2026-01-14": {
+        "tasks": [
+          {
+            "name": "Job Apply",
+            "status": "executed"
+          },
+          {
+            "name": "CFA L1",
+            "status": "executed"
+          },
+          {
+            "name": "MBA BA SEM II",
+            "status": "executed"
+          },
+          {
+            "name": "Morning Run",
+            "status": "executed"
+          },
+          {
+            "name": "Debug Habit",
+            "status": "executed"
+          }
+        ],
+        "score": 83
+      },
+      "2026-01-01": {
+        "tasks": [
+          {
+            "name": "CFA L1",
+            "status": "executed"
+          },
+          {
+            "name": "Morning Run",
+            "status": "executed"
+          },
+          {
+            "name": "MBA BA SEM II",
+            "status": "executed"
+          },
+          {
+            "name": "Modal Test Habit",
+            "status": "executed"
+          },
+          {
+            "name": "Debug Habit",
+            "status": "executed"
+          }
+        ],
+        "score": 83
+      },
+      "2025-12-31": {
+        "tasks": [
+          {
+            "name": "MBA BA SEM II",
+            "status": "to-do"
+          },
+          {
+            "name": "CFA L1",
+            "status": "executed"
+          },
+          {
+            "name": "Job Apply",
+            "status": "executed"
+          },
+          {
+            "name": "Morning Run",
+            "status": "executed"
+          },
+          {
+            "name": "Debug Habit",
+            "status": "executed"
+          }
+        ],
+        "score": 67
+      },
+      "2026-01-02": {
+        "tasks": [
+          {
+            "name": "Job Apply",
+            "status": "executed"
+          },
+          {
+            "name": "CFA L1",
+            "status": "executed"
+          },
+          {
+            "name": "Modal Test Habit",
+            "status": "executed"
+          },
+          {
+            "name": "Debug Habit",
+            "status": "executed"
+          }
+        ],
+        "score": 67
+      },
+      "2026-01-04": {
+        "tasks": [
+          {
+            "name": "MBA BA SEM II",
+            "status": "executed"
+          },
+          {
+            "name": "Morning Run",
+            "status": "executed"
+          },
+          {
+            "name": "CFA L1",
+            "status": "executed"
+          },
+          {
+            "name": "Modal Test Habit",
+            "status": "executed"
+          },
+          {
+            "name": "Debug Habit",
+            "status": "executed"
+          }
+        ],
+        "score": 83
+      },
+      "2026-01-03": {
+        "tasks": [
+          {
+            "name": "MBA BA SEM II",
+            "status": "executed"
+          },
+          {
+            "name": "Job Apply",
+            "status": "executed"
+          },
+          {
+            "name": "Morning Run",
+            "status": "executed"
+          },
+          {
+            "name": "Modal Test Habit",
+            "status": "executed"
+          }
+        ],
+        "score": 67
+      },
+      "2026-01-05": {
+        "tasks": [
+          {
+            "name": "Morning Run",
+            "status": "executed"
+          },
+          {
+            "name": "Job Apply",
+            "status": "executed"
+          },
+          {
+            "name": "CFA L1",
+            "status": "executed"
+          },
+          {
+            "name": "Debug Habit",
+            "status": "executed"
+          },
+          {
+            "name": "Modal Test Habit",
+            "status": "executed"
+          }
+        ],
+        "score": 83
+      },
+      "2026-01-07": {
+        "tasks": [
+          {
+            "name": "MBA BA SEM II",
+            "status": "executed"
+          },
+          {
+            "name": "CFA L1",
+            "status": "executed"
+          },
+          {
+            "name": "Debug Habit",
+            "status": "executed"
+          }
+        ],
+        "score": 50
+      },
+      "2026-01-06": {
+        "tasks": [
+          {
+            "name": "CFA L1",
+            "status": "executed"
+          },
+          {
+            "name": "Modal Test Habit",
+            "status": "executed"
+          }
+        ],
+        "score": 33
+      },
+      "2026-01-09": {
+        "tasks": [
+          {
+            "name": "Job Apply",
+            "status": "executed"
+          },
+          {
+            "name": "CFA L1",
+            "status": "executed"
+          },
+          {
+            "name": "MBA BA SEM II",
+            "status": "executed"
+          },
+          {
+            "name": "Morning Run",
+            "status": "executed"
+          },
+          {
+            "name": "Debug Habit",
+            "status": "executed"
+          },
+          {
+            "name": "Modal Test Habit",
+            "status": "executed"
+          }
+        ],
+        "score": 100
+      },
+      "2026-01-08": {
+        "tasks": [
+          {
+            "name": "Job Apply",
+            "status": "executed"
+          },
+          {
+            "name": "Modal Test Habit",
+            "status": "executed"
+          }
+        ],
+        "score": 33
+      },
+      "2026-01-10": {
+        "tasks": [
+          {
+            "name": "Morning Run",
+            "status": "executed"
+          },
+          {
+            "name": "Job Apply",
+            "status": "executed"
+          },
+          {
+            "name": "Modal Test Habit",
+            "status": "executed"
+          }
+        ],
+        "score": 50
+      },
+      "2026-01-11": {
+        "tasks": [
+          {
+            "name": "CFA L1",
+            "status": "executed"
+          },
+          {
+            "name": "Job Apply",
+            "status": "executed"
+          },
+          {
+            "name": "Morning Run",
+            "status": "executed"
+          },
+          {
+            "name": "Modal Test Habit",
+            "status": "executed"
+          }
+        ],
+        "score": 67
+      },
+      "2026-01-12": {
+        "tasks": [
+          {
+            "name": "MBA BA SEM II",
+            "status": "executed"
+          },
+          {
+            "name": "Job Apply",
+            "status": "executed"
+          },
+          {
+            "name": "Morning Run",
+            "status": "executed"
+          },
+          {
+            "name": "Modal Test Habit",
+            "status": "executed"
+          }
+        ],
+        "score": 67
+      },
+      "2026-01-13": {
+        "tasks": [
+          {
+            "name": "Morning Run",
+            "status": "executed"
+          },
+          {
+            "name": "Job Apply",
+            "status": "executed"
+          },
+          {
+            "name": "CFA L1",
+            "status": "executed"
+          },
+          {
+            "name": "Debug Habit",
+            "status": "executed"
+          }
+        ],
+        "score": 67
+      },
+      "2026-01-21": {
+        "tasks": [
+          {
+            "name": "MBA BA SEM II",
+            "status": "executed"
+          },
+          {
+            "name": "CFA L1",
+            "status": "executed"
+          }
+        ],
+        "score": 33
+      },
+      "2026-02-10": {
+        "score": 17,
+        "tasks": [
+          {
+            "name": "TestHabit",
+            "status": "executed"
+          },
+          {
+            "name": "MBA BA SEM II",
+            "status": "to-do"
+          },
+          {
+            "name": "CFA L1",
+            "status": "to-do"
+          }
+        ]
+      },
+      "2026-02-03": {
+        "tasks": [
+          {
+            "name": "CFA L1",
+            "status": "to-do"
+          }
+        ],
+        "score": 0
+      },
+      "2026-02-09": {
+        "tasks": [
+          {
+            "name": "MBA BA SEM II",
+            "status": "to-do"
+          }
+        ],
+        "score": 0
+      },
+      "2026-03-13": {
+        "tasks": [
+          {
+            "name": "CFA L1",
+            "status": "to-do"
+          }
+        ],
+        "score": 0
+      },
+      "2026-03-22": {
+        "tasks": [
+          {
+            "name": "MBA BA SEM II",
+            "status": "to-do"
+          },
+          {
+            "name": "CFA L1",
+            "status": "to-do"
+          },
+          {
+            "name": "Job Apply",
+            "status": "to-do"
+          },
+          {
+            "name": "Morning Run",
+            "status": "to-do"
+          },
+          {
+            "name": "Modal Test Habit",
+            "status": "to-do"
+          }
+        ],
+        "score": 0
+      },
+      "2026-03-20": {
+        "tasks": [
+          {
+            "name": "Debug Habit",
+            "status": "to-do"
+          }
+        ],
+        "score": 0
+      }
+    },
+    "goals": {},
+    "protocols": {
+      "2026-01-16": {
+        "No Snooze": true,
+        "Read 10 Pages": true,
+        "Clear Inbox": true,
+        "Plan Tomorrow": true
+      },
+      "2026-01-17": {
+        "Plan Tomorrow": false
+      },
+      "2026-01-22": {
+        "Clear Inbox": false
+      }
+    },
+    "moods": {
+      "2026-01-16": {
+        "energy": 7,
+        "timestamp": 1768585886057
+      }
+    },
+    "achievements": []
+  },
+  "attendanceRecords": []
+}

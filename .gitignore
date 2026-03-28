@@ -1,5 +1,4 @@
 node_modules
 .env
 credentials.json
-database.json
 .DS_Store
