@@ -66,39 +66,6 @@ function loadDB() {
 
 async function saveDB(data) {
     try {
-        if (mongoose.connection.readyState === 1) {
-            // Mongo is connected, perform Write Operations
-            await Admin.updateOne({}, data.admin, { upsert: true });
-            
-            // Extract projects to its own model then update content natively
-            if (data.content && data.content.resume) {
-                await Project.deleteMany({});
-                if (data.content.resume.projects && data.content.resume.projects.length > 0) {
-                    await Project.insertMany(data.content.resume.projects);
-                }
-            }
-            await Content.updateOne({}, data.content, { upsert: true });
-            
-            // Messages
-            await Message.deleteMany({});
-            if (data.messages && data.messages.length > 0) {
-                await Message.insertMany(data.messages);
-            }
-
-            // Tracker
-            await Tracker.updateOne({}, data.tracker, { upsert: true });
-
-            // Attendance
-            await Subject.deleteMany({});
-            if (data.attendance && data.attendance.length > 0) {
-                await Subject.insertMany(data.attendance);
-            }
-            await AttendanceRecord.deleteMany({});
-            if (data.attendanceRecords && data.attendanceRecords.length > 0) {
-                await AttendanceRecord.insertMany(data.attendanceRecords);
-            }
-        }
-        // Save Fallback JSON
         await fs.promises.writeFile(DB_FILE, JSON.stringify(data, null, 2));
     } catch (err) {
         console.error("Error heavily updating DB:", err);
@@ -255,14 +222,21 @@ app.get('/dashboard', async (req, res) => {
 app.post('/contact', async (req, res) => {
     const { name, email, message } = req.body;
     if (name && email && message) {
-        db.messages.unshift({
+        const newMsg = {
             id: Date.now(),
             name,
             email,
             message,
             date: new Date().toLocaleDateString(),
-            read: false // New field for "Read" status
-        });
+            read: false
+        };
+        try {
+            await Message.create(newMsg);
+            console.log("Saved to MongoDB:", newMsg);
+        } catch (e) {
+            console.error("MongoDB failed, using JSON backup ONLY", e);
+        }
+        db.messages.unshift(newMsg);
         await saveDB(db);
     }
     res.redirect('/');
@@ -300,7 +274,12 @@ app.get('/auth/google/callback', async (req, res) => {
             const { tokens } = await oauth2Client.getToken(code);
             oauth2Client.setCredentials(tokens);
 
-            // Save tokens to DB (in reality, should be per user)
+            try {
+                await Admin.updateOne({}, { $set: { googleTokens: tokens } }, { upsert: true });
+                console.log("Saved to MongoDB:", { type: "Google Tokens" });
+            } catch (e) {
+                console.error("MongoDB failed securely writing admin tokens", e);
+            }
             db.admin.googleTokens = tokens;
             await saveDB(db);
 
@@ -454,11 +433,14 @@ app.post('/api/attendance/add', async (req, res) => {
     console.log("Adding Subject:", { name, code }); // Debug Log
     if (name && code) {
         if (!db.attendance) db.attendance = [];
-        db.attendance.push({
-            id: Date.now(),
-            name,
-            code
-        });
+        const newSubj = { id: Date.now(), name, code };
+        try {
+            await Subject.create(newSubj);
+            console.log("Saved to MongoDB:", newSubj);
+        } catch (e) {
+            console.error("MongoDB failed saving Subject", e);
+        }
+        db.attendance.push(newSubj);
         await saveDB(db);
         console.log("Subject Added to DB");
     } else {
@@ -476,8 +458,14 @@ app.post('/api/attendance/mark-event', async (req, res) => {
 
     // Remove existing if re-marking
     db.attendanceRecords = db.attendanceRecords.filter(r => r.eventId !== eventId);
-
     db.attendanceRecords.push({ eventId, subjectId, status });
+    try {
+        await AttendanceRecord.deleteOne({ eventId });
+        const record = await AttendanceRecord.create({ eventId, subjectId, status });
+        console.log("Saved to MongoDB:", record);
+    } catch (e) {
+        console.error("MongoDB failed marking event", e);
+    }
     await saveDB(db);
 
     res.json({ success: true }); // AJAX response preferred
@@ -489,7 +477,12 @@ app.post('/api/attendance/delete', async (req, res) => {
     const { id } = req.body;
     if (db.attendance) {
         db.attendance = db.attendance.filter(s => s.id != id);
-        // Also cleanup records? Optional.
+        try {
+            await Subject.deleteOne({ id });
+            console.log("Saved to MongoDB: Deleted Subject", id);
+        } catch (e) {
+            console.error("MongoDB failed deleting subject", e);
+        }
         await saveDB(db);
     }
     res.redirect('/dashboard?tab=attendance');
@@ -518,6 +511,12 @@ app.post('/api/tracker/save', async (req, res) => {
 
     if (!db.tracker) db.tracker = { template: [], logs: {} };
     db.tracker.logs[date] = log;
+    try {
+        await Tracker.updateOne({}, { $set: { [`logs.${date}`]: log } }, { upsert: true });
+        console.log("Saved to MongoDB:", { type: "Tracker Log", date });
+    } catch (e) {
+        console.error("MongoDB failed saving Tracker Data", e);
+    }
     await saveDB(db);
     res.json({ success: true });
 });
@@ -529,6 +528,12 @@ app.post('/api/tracker/template', async (req, res) => {
 
     if (!db.tracker) db.tracker = { template: [], logs: {} };
     db.tracker.template = template;
+    try {
+        await Tracker.updateOne({}, { $set: { template } }, { upsert: true });
+        console.log("Saved to MongoDB:", { type: "Tracker Template" });
+    } catch (e) {
+        console.error("MongoDB failed saving Tracker Template", e);
+    }
     await saveDB(db);
     res.json({ success: true });
 });
@@ -542,6 +547,12 @@ app.post('/api/tracker/goal', async (req, res) => {
     if (!db.tracker.goals[habit]) db.tracker.goals[habit] = {};
     db.tracker.goals[habit][month] = parseInt(goal);
 
+    try {
+        await Tracker.updateOne({}, { $set: { [`goals.${habit}.${month}`]: parseInt(goal) } }, { upsert: true });
+        console.log("Saved to MongoDB:", { type: "Tracker Goal", habit, month });
+    } catch (e) {
+        console.error("MongoDB failed saving Tracker Goal", e);
+    }
     await saveDB(db);
     res.json({ success: true });
 });
@@ -554,6 +565,12 @@ app.post('/api/tracker/protocol', async (req, res) => {
     if (!db.tracker.protocols) db.tracker.protocols = {};
     db.tracker.protocols[date] = protocols;
 
+    try {
+        await Tracker.updateOne({}, { $set: { [`protocols.${date}`]: protocols } }, { upsert: true });
+        console.log("Saved to MongoDB:", { type: "Tracker Protocol", date });
+    } catch (e) {
+        console.error("MongoDB failed saving Tracker Protocol", e);
+    }
     await saveDB(db);
     res.json({ success: true });
 });
@@ -566,6 +583,12 @@ app.post('/api/tracker/mood', async (req, res) => {
     if (!db.tracker.moods) db.tracker.moods = {};
     db.tracker.moods[date] = data;
 
+    try {
+        await Tracker.updateOne({}, { $set: { [`moods.${date}`]: data } }, { upsert: true });
+        console.log("Saved to MongoDB:", { type: "Tracker Mood", date });
+    } catch (e) {
+        console.error("MongoDB failed saving Tracker Mood", e);
+    }
     await saveDB(db);
     res.json({ success: true });
 });
@@ -576,8 +599,15 @@ app.post('/api/tracker/achievement', async (req, res) => {
     const { text, date } = req.body;
 
     if (!db.tracker.achievements) db.tracker.achievements = [];
-    db.tracker.achievements.push({ id: Date.now(), text, date });
+    const newAch = { id: Date.now(), text, date };
+    db.tracker.achievements.push(newAch);
 
+    try {
+        await Tracker.updateOne({}, { $push: { achievements: newAch } }, { upsert: true });
+        console.log("Saved to MongoDB:", { type: "Tracker Achievement", text });
+    } catch (e) {
+        console.error("MongoDB failed saving Tracker Achievement", e);
+    }
     await saveDB(db);
     res.json({ success: true });
 });
@@ -589,6 +619,12 @@ app.post('/api/tracker/achievement/delete', async (req, res) => {
 
     if (db.tracker.achievements) {
         db.tracker.achievements = db.tracker.achievements.filter(a => a.id != id);
+        try {
+            await Tracker.updateOne({}, { $pull: { achievements: { id: parseInt(id) } } });
+            console.log("Saved to MongoDB: Deleted Achievement", id);
+        } catch (e) {
+            console.error("MongoDB failed deleting Achievement", e);
+        }
         await saveDB(db);
     }
     res.json({ success: true });
@@ -600,12 +636,15 @@ app.post('/api/tracker/achievement/delete', async (req, res) => {
 app.post('/admin/update-content', async (req, res) => {
     if (!req.session.isAuthenticated) return res.status(403).send('Unauthorized');
 
-    // Merge updates deep
-    if (req.body.hero) db.content.hero = { ...db.content.hero, ...req.body.hero };
-    if (req.body.about) db.content.about = { ...db.content.about, ...req.body.about };
+    let contentUpdates = {};
+    if (req.body.hero) { db.content.hero = { ...db.content.hero, ...req.body.hero }; contentUpdates["hero"] = db.content.hero; }
+    if (req.body.about) { db.content.about = { ...db.content.about, ...req.body.about }; contentUpdates["about"] = db.content.about; }
+    if (req.body.bio) { db.content.about.bio = req.body.bio; contentUpdates["about"] = db.content.about; }
 
-    // Legacy Bio Support (if simple bio field is sent)
-    if (req.body.bio) db.content.about.bio = req.body.bio;
+    try {
+        await Content.updateOne({}, { $set: contentUpdates }, { upsert: true });
+        console.log("Saved to MongoDB: Updated Profile Content");
+    } catch (e) { console.error("MongoDB failed saving profile content", e); }
 
     await saveDB(db);
     res.redirect('/dashboard?tab=content');
@@ -625,11 +664,15 @@ app.post('/admin/projects/add', async (req, res) => {
         const { title, desc, tags } = req.body;
         if (title && desc) {
             const tagArray = (tags && typeof tags === 'string') ? tags.split(',').map(t => t.trim()) : [];
+            const newProject = { id: Date.now(), title, desc, tags: tagArray };
+            
+            try {
+                await Project.create(newProject);
+                console.log("Saved to MongoDB:", newProject);
+            } catch (e) { console.error("MongoDB failed saving project", e); }
+
             if (!db.content.resume.projects) db.content.resume.projects = [];
-            db.content.resume.projects.push({
-                id: Date.now(),
-                title, desc, tags: tagArray
-            });
+            db.content.resume.projects.push(newProject);
             await saveDB(db);
         }
     } catch (err) {
@@ -653,12 +696,15 @@ app.post('/admin/projects/edit', async (req, res) => {
             } else if (tags === '') {
                 project.tags = []; // Allow clearing tags
             }
+            try {
+                await Project.updateOne({ id: parseInt(id) }, { $set: { title: project.title, desc: project.desc, tags: project.tags } });
+                console.log("Saved to MongoDB: Edited Project", id);
+            } catch (e) { console.error("MongoDB failed editing project", e); }
             await saveDB(db);
         }
-    } catch (err) {
-        console.error("Error editing project:", err);
-    }
+    } catch (err) { // ...
     res.redirect('/dashboard?tab=projects');
+}
 });
 
 // Delete Project
@@ -666,6 +712,10 @@ app.post('/admin/projects/delete', async (req, res) => {
     if (!req.session.isAuthenticated) return res.status(403).send('Unauthorized');
     const { id } = req.body;
     db.content.resume.projects = db.content.resume.projects.filter(p => p.id != id);
+    try {
+        await Project.deleteOne({ id: parseInt(id) });
+        console.log("Saved to MongoDB: Deleted Project", id);
+    } catch (e) { console.error("MongoDB failed deleting project", e); }
     await saveDB(db);
     res.redirect('/dashboard?tab=projects');
 });
@@ -677,10 +727,12 @@ app.post('/admin/certifications/add', async (req, res) => {
     const { name, issuer, icon, style } = req.body;
     if (name && issuer) {
         if (!db.content.certifications) db.content.certifications = [];
-        db.content.certifications.push({
-            id: Date.now(),
-            name, issuer, icon, style
-        });
+        const newCert = { id: Date.now(), name, issuer, icon, style };
+        try {
+            await Content.updateOne({}, { $push: { certifications: newCert } }, { upsert: true });
+            console.log("Saved to MongoDB:", newCert);
+        } catch (e) { console.error("MongoDB failed saving certification", e); }
+        db.content.certifications.push(newCert);
         await saveDB(db);
     }
     res.redirect('/dashboard?tab=content'); // OR certs tab
@@ -691,6 +743,10 @@ app.post('/admin/certifications/delete', async (req, res) => {
     const { id } = req.body;
     if (db.content.certifications) {
         db.content.certifications = db.content.certifications.filter(c => c.id != id);
+        try {
+            await Content.updateOne({}, { $pull: { certifications: { id: parseInt(id) } } });
+            console.log("Saved to MongoDB: Deleted Certification", id);
+        } catch (e) { console.error("MongoDB block failed", e); }
         await saveDB(db);
     }
     res.redirect('/dashboard?tab=content');
@@ -701,6 +757,10 @@ app.post('/admin/messages/delete', async (req, res) => {
     if (!req.session.isAuthenticated) return res.status(403).send('Unauthorized');
     const { id } = req.body;
     db.messages = db.messages.filter(m => m.id != id); // Filter out the msg
+    try {
+        await Message.deleteOne({ id: parseInt(id) });
+        console.log("Saved to MongoDB: Deleted Message", id);
+    } catch (e) { console.error(e); }
     await saveDB(db);
     res.redirect('/dashboard?tab=inbox');
 });
@@ -712,6 +772,10 @@ app.post('/admin/messages/read', async (req, res) => {
     const msg = db.messages.find(m => m.id == id);
     if (msg) {
         msg.read = true;
+        try {
+            await Message.updateOne({ id: parseInt(id) }, { $set: { read: true } });
+            console.log("Saved to MongoDB: Marked message read", id);
+        } catch(e) { console.error(e); }
         await saveDB(db);
     }
     res.redirect('/dashboard?tab=inbox');
@@ -723,8 +787,11 @@ app.post('/admin/settings/password', async (req, res) => {
     const { newPassword } = req.body;
     if (newPassword) {
         db.admin.passwordHash = await bcrypt.hash(newPassword, 10);
+        try {
+            await Admin.updateOne({}, { $set: { passwordHash: db.admin.passwordHash } }, { upsert: true });
+            console.log("Saved to MongoDB: Admin password updated.");
+        } catch(e) { console.error(e); }
         await saveDB(db);
-        console.log("Admin password updated.");
     }
     res.redirect('/dashboard?tab=settings');
 });
