@@ -1,0 +1,120 @@
+﻿git : remote: error: 
+GH013: Repository rule 
+violations found for 
+refs/heads/main.        
+At line:1 char:1
++ git push origin main > 
+push_error.txt 2>&1
++ ~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo       
+       : NotSpecified:   
+  (remote: error: ...s   
+ /main.        :Strin    
+g) [], RemoteExcepti    
+on
+    + FullyQualifiedErro 
+   rId : NativeCommandE  
+  rror
+ 
+remote: 
+remote: - GITHUB PUSH 
+PROTECTION        
+remote:   ΓÇöΓÇöΓÇöΓÇöΓÇö
+ΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓ
+ÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇ
+öΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇö
+ΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓ
+ÇöΓÇöΓÇö        
+remote:     Resolve the 
+following violations 
+before pushing again     
+   
+remote: 
+remote:     - Push 
+cannot contain secrets   
+     
+remote: 
+remote:             
+remote:      (?) Learn 
+how to resolve a blocked 
+push        
+remote:      https://docs
+.github.com/code-security
+/secret-scanning/working-
+with-secret-scanning-and-
+push-protection/working-w
+ith-push-protection-from-
+the-command-line#resolvin
+g-a-blocked-push        
+remote:             
+remote:             
+remote:       ΓÇöΓÇö 
+Google OAuth Access 
+Token ΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓ
+ÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇ
+öΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇö
+ΓÇöΓÇö        
+remote:        
+locations:        
+remote:          - 
+commit: 69cb473dd571ad317
+2c04f8aacc76f34882965d0  
+      
+remote:            path: 
+database.json:177        
+remote:             
+remote:        (?) To 
+push, remove secret from 
+commit(s) or follow this 
+URL to allow the secret. 
+       
+remote:        https://gi
+thub.com/srijanagrawalman
+glik/portfolio/security/s
+ecret-scanning/unblock-se
+cret/3BZ0MbAMgP4ywLtYr5gD
+j5nO4BL        
+remote:             
+remote:             
+remote:       ΓÇöΓÇö 
+Google OAuth Refresh 
+Token ΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓ
+ÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇ
+öΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇö
+ΓÇö        
+remote:        
+locations:        
+remote:          - 
+commit: 69cb473dd571ad317
+2c04f8aacc76f34882965d0  
+      
+remote:            path: 
+database.json:178        
+remote:             
+remote:        (?) To 
+push, remove secret from 
+commit(s) or follow this 
+URL to allow the secret. 
+       
+remote:        https://gi
+thub.com/srijanagrawalman
+glik/portfolio/security/s
+ecret-scanning/unblock-se
+cret/3BZ0MXw5LWKcCnJNK16U
+b0LLJEF        
+remote:             
+remote: 
+remote: 
+To https://github.com/sri
+janagrawalmanglik/portfol
+io.git
+ ! [remote rejected] 
+main -> main (push 
+declined due to 
+repository rule 
+violations)
+error: failed to push 
+some refs to 'https://git
+hub.com/srijanagrawalmang
+lik/portfolio.git'

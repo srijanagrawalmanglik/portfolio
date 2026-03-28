@@ -12,6 +12,8 @@ const multer = require('multer');
 
 const app = express();
 const { google } = require('googleapis');
+const mongoose = require('mongoose');
+const { Message, Project, Habit, Content, Admin, Tracker, Subject, AttendanceRecord } = require('./models');
 const PORT = process.env.PORT || 3000;
 const DB_FILE = path.join(__dirname, 'database.json');
 
@@ -64,14 +66,79 @@ function loadDB() {
 
 async function saveDB(data) {
     try {
+        if (mongoose.connection.readyState === 1) {
+            // Mongo is connected, perform Write Operations
+            await Admin.updateOne({}, data.admin, { upsert: true });
+            
+            // Extract projects to its own model then update content natively
+            if (data.content && data.content.resume) {
+                await Project.deleteMany({});
+                if (data.content.resume.projects && data.content.resume.projects.length > 0) {
+                    await Project.insertMany(data.content.resume.projects);
+                }
+            }
+            await Content.updateOne({}, data.content, { upsert: true });
+            
+            // Messages
+            await Message.deleteMany({});
+            if (data.messages && data.messages.length > 0) {
+                await Message.insertMany(data.messages);
+            }
+
+            // Tracker
+            await Tracker.updateOne({}, data.tracker, { upsert: true });
+
+            // Attendance
+            await Subject.deleteMany({});
+            if (data.attendance && data.attendance.length > 0) {
+                await Subject.insertMany(data.attendance);
+            }
+            await AttendanceRecord.deleteMany({});
+            if (data.attendanceRecords && data.attendanceRecords.length > 0) {
+                await AttendanceRecord.insertMany(data.attendanceRecords);
+            }
+        }
+        // Save Fallback JSON
         await fs.promises.writeFile(DB_FILE, JSON.stringify(data, null, 2));
     } catch (err) {
-        console.error("Error saving DB:", err);
+        console.error("Error heavily updating DB:", err);
+        // Ensure manual JSON fallback on write fail
+        fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2));
+    }
+}
+
+async function syncDB() {
+    try {
+        // Fetch from Mongo
+        const adminData = await Admin.findOne();
+        const contentData = await Content.findOne();
+        const messagesData = await Message.find();
+        const trackerData = await Tracker.findOne();
+        const subjectsData = await Subject.find();
+        const recordsData = await AttendanceRecord.find();
+        const projectsData = await Project.find();
+
+        if (adminData && contentData) {
+            // Map MongoDB models to legacy `db` format for fallback routes not yet converted
+            db.admin = adminData;
+            db.content = contentData;
+            db.content.resume.projects = projectsData; // Reattach standalone projects array
+            db.messages = messagesData;
+            db.tracker = trackerData || { template: [], logs: {} };
+            db.attendance = subjectsData;
+            db.attendanceRecords = recordsData;
+        } else {
+            console.warn("MongoDB is empty or unavailable. Yielding to JSON fallback.");
+            db = loadDB(); // Fallback to synchronous local JSON
+        }
+    } catch (err) {
+        console.error("MongoDB Sync Failed. Assuming offline JSON fallback:", err);
+        db = loadDB();
     }
 }
 
 // Initialize persistence
-let db = loadDB();
+let db = loadDB(); // Temp sync load
 if (!db) {
     console.warn("WARNING: Loading database gracefully failed. Using an empty in-memory fallback to prevent crash.");
     db = { admin: {}, messages: [], content: { resume: {} } };
@@ -114,8 +181,16 @@ app.use(session({
 // --- ROUTES ---
 
 // Home
-app.get('/', (req, res) => {
-    res.render('index', { content: db.content });
+app.get('/', async (req, res) => {
+    try {
+        const content = await Content.findOne();
+        if (content) {
+            const projects = await Project.find();
+            if (content.resume) content.resume.projects = projects;
+            return res.render('index', { content });
+        }
+    } catch (e) { console.error(e) }
+    res.render('index', { content: db.content }); // Fallback
 });
 
 // Login
@@ -125,31 +200,55 @@ app.get('/login', (req, res) => {
 
 app.post('/login', async (req, res) => {
     const { username, password } = req.body;
-    // Hardcoded username 'admin' for now
     if (username !== 'admin') return res.render('login', { error: 'Invalid Credentials' });
 
-    const match = await bcrypt.compare(password, db.admin.passwordHash);
-    if (match) {
-        req.session.isAuthenticated = true;
-        req.session.user = 'admin';
-        return res.redirect('/dashboard');
-    } else {
-        return res.render('login', { error: 'Invalid Credentials' });
+    try {
+        const admin = await Admin.findOne();
+        const match = await bcrypt.compare(password, admin ? admin.passwordHash : db.admin.passwordHash);
+        if (match) {
+            req.session.isAuthenticated = true;
+            req.session.user = 'admin';
+            return res.redirect('/dashboard');
+        }
+    } catch (e) {
+        // Fallback
+        const match = await bcrypt.compare(password, db.admin.passwordHash);
+        if (match) {
+            req.session.isAuthenticated = true;
+            req.session.user = 'admin';
+            return res.redirect('/dashboard');
+        }
     }
+    return res.render('login', { error: 'Invalid Credentials' });
 });
 
 // Dashboard
-app.get('/dashboard', (req, res) => {
+app.get('/dashboard', async (req, res) => {
     if (!req.session.isAuthenticated) return res.redirect('/login');
-    // Refresh DB from disk just in case (though singleton is fine for single instance)
-    // but in-memory 'db' variable is efficient enough.
-    res.render('dashboard', {
-        user: req.session.user,
-        messages: db.messages || [],
-        content: db.content,
-        googleLinked: !!db.admin.googleTokens,
-        attendance: db.attendance || []
-    });
+    try {
+        const admin = await Admin.findOne() || db.admin;
+        const messages = await Message.find() || db.messages;
+        const content = await Content.findOne() || db.content;
+        const projects = await Project.find() || db.content.resume.projects;
+        if (content.resume && projects) content.resume.projects = projects;
+        const attendance = await Subject.find() || db.attendance;
+        
+        return res.render('dashboard', {
+            user: req.session.user,
+            messages: messages || [],
+            content: content,
+            googleLinked: !!(admin.googleTokens && admin.googleTokens.access_token),
+            attendance: attendance || []
+        });
+    } catch (e) {
+        res.render('dashboard', {
+            user: req.session.user,
+            messages: db.messages || [],
+            content: db.content,
+            googleLinked: !!db.admin.googleTokens,
+            attendance: db.attendance || []
+        });
+    }
 });
 
 // Contact Form
@@ -636,6 +735,10 @@ app.get('/logout', (req, res) => {
     res.redirect('/');
 });
 
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+const connectDB = require('./db');
+connectDB().then(async () => {
+    await syncDB();
+    app.listen(PORT, () => {
+        console.log(`Server running on port ${PORT}`);
+    });
 });
