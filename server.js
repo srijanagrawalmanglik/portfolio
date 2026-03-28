@@ -36,11 +36,28 @@ const upload = multer({ storage: storage });
 // --- DATABASE HELPER FUNCTIONS ---
 function loadDB() {
     try {
-        if (!fs.existsSync(DB_FILE)) return null;
+        if (!fs.existsSync(DB_FILE)) {
+            console.warn("database.json missing. Creating automatically with default structure...");
+            const defaultDB = {
+                admin: {},
+                messages: [],
+                content: {
+                    hero: { name: "Srijan Agrawal", subtitle: "Financial Analyst & Developer" },
+                    about: { bio: "My biography" },
+                    resume: { experience: [], education: [], skills: [], projects: [] },
+                    certifications: []
+                },
+                attendance: [],
+                tracker: { template: [], logs: {} }
+            };
+            fs.writeFileSync(DB_FILE, JSON.stringify(defaultDB, null, 2));
+            console.log("database.json created automatically");
+            return defaultDB;
+        }
         const data = fs.readFileSync(DB_FILE, 'utf8');
         return JSON.parse(data);
     } catch (err) {
-        console.error("Error loading DB:", err);
+        console.error("Error loading DB (Check JSON format):", err);
         return null;
     }
 }
@@ -56,8 +73,8 @@ async function saveDB(data) {
 // Initialize persistence
 let db = loadDB();
 if (!db) {
-    console.error("CRITICAL: database.json missing or invalid.");
-    process.exit(1);
+    console.warn("WARNING: Loading database gracefully failed. Using an empty in-memory fallback to prevent crash.");
+    db = { admin: {}, messages: [], content: { resume: {} } };
 }
 
 // Ensure Admin Password
