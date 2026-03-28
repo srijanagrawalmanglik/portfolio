@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Srijan Agrawal Manglik | Business Analyst & Data Analytics Professional</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;700;800&family=Space+Grotesk:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="ambient-background"></div>
+
+    <header class="header">
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
+            <!-- 1. Brand (Left, Sticky) -->
+            <a href="#" style="font-weight: 800; font-size: 1.5rem; color: white; text-decoration: none;">SRIJAN<span
+                    class="highlight">.</span></a>
+
+            <!-- 2. Nav Links (Center, Fades) -->
+            <nav style="display: flex; align-items: center;">
+                <a href="#about" class="nav-link">About</a>
+                <a href="#experience" class="nav-link">Work</a>
+                <a href="#education" class="nav-link">Education</a>
+                <a href="#projects" class="nav-link">Projects</a>
+                <a href="#certifications" class="nav-link">Certs</a>
+                <a href="#contact" class="nav-link">Contact</a>
+            </nav>
+
+            <!-- 3. Resume Button (Right, Sticky) -->
+            <a href="assets/resume/resume.pdf" download class="btn btn-gold btn-lg">
+                <i class="fas fa-download" style="margin-right: 10px;"></i> Resume
+            </a>
+        </div>
+    </header>
+    <!-- Hero -->
+    <section class="hero">
+        <div class="container">
+            <br><br>
+            <span class="hero-subtitle">
+                <%= content.hero ? content.hero.subtitle : 'Business Analyst & MBA Candidate' %>
+            </span>
+            <h1 class="hero-title"><%- content.hero ? content.hero.title
+                    : 'Precision in <br><span class="gradient-text">Every Insight.</span>' %></h1>
+            <p class="hero-description">
+                <%= content.hero ? content.hero.desc : 'Transforming data into actionable business insights...' %>
+            </p>
+            <a href="#experience" class="btn">Explore Journey</a>
+        </div>
+    </section>
+
+    <!-- Introduction Section -->
+    <section id="about" class="section">
+        <div class="container">
+            <div class="intro-grid">
+                <div class="intro-img-wrapper">
+                    <img src="assets/profile.jpg" alt="Srijan Agrawal Manglik" class="intro-img">
+                </div>
+                <div class="intro-text">
+                    <span class="hero-subtitle" style="margin-bottom: 0.5rem;">
+                        <%= content.about ? content.about.subtitle : 'The Strategist' %>
+                    </span>
+                    <h2 class="intro-name"><%- content.about ? content.about.title
+                            : 'Srijan Agrawal <br><span class="highlight">Manglik</span>' %></h2>
+                    <p class="intro-bio">
+                        <%- content.about ? content.about.bio : content.bio %>
+                    </p>
+                    <div style="display: flex; gap: 2rem; align-items: center; justify-content: flex-start;"
+                        class="intro-stats">
+                        <div>
+                            <div style="font-size: 2rem; font-weight: 700; color: white;">2+</div>
+                            <div
+                                style="font-size: 0.8rem; color: var(--gold); text-transform: uppercase; letter-spacing: 1px;">
+                                Years Exp</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 2rem; font-weight: 700; color: white;">
+                                <%= content.resume.projects ? content.resume.projects.length : '12+' %>
+                            </div>
+                            <div
+                                style="font-size: 0.8rem; color: var(--gold); text-transform: uppercase; letter-spacing: 1px;">
+                                Projects</div>
+                        </div>
+                        <a href="assets/resume/resume.pdf" download class="btn"
+                            style="margin-left: 2rem; padding: 0.8rem 2.5rem; font-size: 1rem; border: 1px solid var(--gold); color: var(--gold);">
+                            <i class="fas fa-download" style="margin-right: 10px;"></i> Resume
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Experience: The Golden Thread -->
+    <section id="experience" class="section">
+        <div class="container">
+            <h2 class="section-title">The Career Trajectory</h2>
+            <div class="timeline">
+                <% if(content.resume.experience) { %>
+                    <% content.resume.experience.forEach(exp=> { %>
+                        <div class="timeline-item">
+                            <div class="timeline-dot"></div>
+                            <span class="timeline-date">
+                                <%= exp.date %>
+                            </span>
+                            <h3 class="timeline-role">
+                                <%= exp.role %>
+                            </h3>
+                            <div class="timeline-company">
+                                <%= exp.company %>
+                            </div>
+                            <p class="timeline-desc">
+                                <%= exp.desc %>
+                            </p>
+                        </div>
+                        <% }) %>
+                            <% } %>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Cloud (No Cards) -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">Arsenal of Skills</h2>
+            <div class="skills-wrapper">
+                <% if(content.resume.skills) { %>
+                    <% content.resume.skills.forEach(skill=> { %>
+                        <span class="skill-pill">
+                            <%= skill %>
+                        </span>
+                        <% }) %>
+                            <% } %>
+            </div>
+        </div>
+    </section>
+
+    <!-- Education: Minimalist -->
+    <section id="education" class="section">
+        <div class="container">
+            <h2 class="section-title">Academic Foundation</h2>
+            <div class="education-grid">
+                <% if(content.resume.education) { %>
+                    <% content.resume.education.forEach(edu=> { %>
+                        <div class="edu-item">
+                            <h3 class="edu-degree">
+                                <%= edu.degree %>
+                            </h3>
+                            <p class="edu-school">
+                                <%= edu.institute %>
+                            </p>
+                            <p style="color: #666;">
+                                <%= edu.year %> | <%= edu.score %>
+                            </p>
+                        </div>
+                        <% }) %>
+                            <% } %>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects: Open Flow -->
+    <section id="projects" class="section">
+        <div class="container">
+            <h2 class="section-title">Select Works</h2>
+            <div class="projects-grid">
+                <% if(content.resume.projects) { %>
+                    <% content.resume.projects.forEach(proj=> { %>
+                        <div class="project-item">
+                            <h3 class="project-title">
+                                <%= proj.title %>
+                            </h3>
+                            <p class="project-desc">
+                                <%= proj.desc %>
+                            </p>
+                            <div class="tags">
+                                <% proj.tags.forEach(tag=> { %>
+                                    <span>#<%= tag %></span>
+                                    <% }) %>
+                            </div>
+                        </div>
+                        <% }) %>
+                            <% } %>
+            </div>
+        </div>
+    </section>
+
+    <!-- Certifications -->
+    <section id="certifications" class="section">
+        <div class="container">
+            <h2 class="section-title" style="font-size: 2rem; margin-bottom: 3rem;">Certifications</h2>
+            <div class="cert-list">
+                <% if(content.certifications) { %>
+                    <% content.certifications.forEach(cert=> { %>
+                        <div class="cert-item" style="<%= cert.style || '' %>">
+                            <div class="cert-icon"><i class="<%= cert.icon %>"></i></div>
+                            <div class="cert-content">
+                                <div class="cert-name"
+                                    style="<%= cert.style && cert.style.includes('gold') ? 'color: var(--gold);' : '' %>">
+                                    <%= cert.name %>
+                                </div>
+                                <div class="cert-issuer">
+                                    <%= cert.issuer %>
+                                </div>
+                            </div>
+                        </div>
+                        <% }) %>
+                            <% } %>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="section">
+        <div class="container" style="text-align: center;">
+            <p style="font-size: 1.5rem; margin-bottom: 2rem;">Ready to turn data into actionable business insights?</p>
+            <form action="/contact" method="POST" style="max-width: 500px; margin: 0 auto; text-align: left;">
+                <div style="margin-bottom: 1rem;">
+                    <input type="text" name="name" placeholder="Your Name" required
+                        style="width: 100%; padding: 1rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white;">
+                </div>
+                <div style="margin-bottom: 1rem;">
+                    <input type="email" name="email" placeholder="Your Email" required
+                        style="width: 100%; padding: 1rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white;">
+                </div>
+                <div style="margin-bottom: 1rem;">
+                    <textarea name="message" placeholder="Message" rows="4" required
+                        style="width: 100%; padding: 1rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white;"></textarea>
+                </div>
+                <button type="submit" class="btn" style="width: 100%;">Send Message</button>
+            </form>
+        </div>
+    </section>
+
+
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Srijan Agrawal Manglik.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Admin Panel</title>
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .login-card {
+            background: var(--bg-card);
+            padding: 3rem;
+            border-radius: 20px;
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-muted);
+        }
+
+        input {
+            width: 100%;
+            padding: 0.8rem;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.2);
+            color: white;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: var(--secondary);
+        }
+
+        .error {
+            color: #ff4444;
+            margin-bottom: 1rem;
+        }
+
+        .btn-full {
+            width: 100%;
+        }
+
+        /* Math Captcha */
+        .captcha-box {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .captcha-question {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--secondary);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-card">
+        <a href="/" class="logo">Dev<span class="highlight">.</span></a>
+
+        <% if (error) { %>
+            <div class="error">
+                <%= error %>
+            </div>
+            <% } %>
+
+                <form action="/login" method="POST" onsubmit="return validateCaptcha()">
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" name="password" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Verification: <span id="math-q" class="captcha-question"></span></label>
+                        <input type="number" id="math-a" placeholder="Result" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-full">Login</button>
+                </form>
+    </div>
+
+    <script>
+        // Simple Client-Side Robot Verification (Math Puzzle)
+        // Note: For real security, implement reCAPTCHA or server-side math check.
+        const num1 = Math.floor(Math.random() * 10) + 1;
+        const num2 = Math.floor(Math.random() * 10) + 1;
+        const answer = num1 + num2;
+
+        document.getElementById('math-q').textContent = `${num1} + ${num2} = ?`;
+
+        function validateCaptcha() {
+            const userAnswer = parseInt(document.getElementById('math-a').value);
+            if (userAnswer !== answer) {
+                alert("Incorrect Verification Code. Are you a robot?");
+                return false;
+            }
+            return true;
+        }
+    </script>
+</body>
+
+</html>

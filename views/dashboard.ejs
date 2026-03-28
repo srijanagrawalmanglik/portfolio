@@ -1,0 +1,2309 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Srijan | Command Center</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1"></script>
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js'></script>
+
+    <style>
+        :root {
+            /* Palette - "Cyber-Executive" */
+            --bg-body: #050507;
+            --bg-sidebar: #0b0b0f;
+            --bg-card: #121218;
+            --bg-card-hover: #1a1a22;
+
+            --border-subtle: rgba(255, 255, 255, 0.06);
+            --border-focus: rgba(255, 255, 255, 0.15);
+
+            --primary: #536dfe;
+            /* Indigo */
+            --primary-glow: rgba(83, 109, 254, 0.3);
+            --accent: #00e5ff;
+            /* Cyan */
+            --text-main: #ffffff;
+            --text-secondary: #9494a0;
+
+            --success: #00c853;
+            --danger: #ff1744;
+
+            --glass: rgba(255, 255, 255, 0.02);
+            --nav-item-h: 48px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            outline: none;
+        }
+
+        /* START: SCROLLBAR MANAGEMENT */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        html {
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        html::-webkit-scrollbar,
+        body::-webkit-scrollbar {
+            display: none;
+            width: 0;
+            height: 0;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow-x: hidden;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* --- SIDEBAR DESIGN --- */
+        .sidebar {
+            width: 260px;
+            background: var(--bg-sidebar);
+            border-right: 1px solid var(--border-subtle);
+            height: 100vh;
+            position: sticky;
+            top: 0;
+            display: flex;
+            flex-direction: column;
+            padding: 2rem 1.5rem;
+            flex-shrink: 0;
+            z-index: 50;
+        }
+
+        .brand-container {
+            margin-bottom: 3.5rem;
+            padding-left: 0.5rem;
+        }
+
+        .brand {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            letter-spacing: -0.01em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .brand-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--accent);
+        }
+
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .nav-item {
+            position: relative;
+            height: var(--nav-item-h);
+            display: flex;
+            align-items: center;
+            padding: 0 1.25rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            border-radius: 12px;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .nav-item i {
+            width: 24px;
+            margin-right: 12px;
+            font-size: 1.1rem;
+            transition: color 0.3s ease;
+        }
+
+        /* Hover Effect */
+        .nav-item:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        /* Active Effect */
+        .nav-item.active {
+            color: white;
+            background: linear-gradient(90deg, rgba(83, 109, 254, 0.1), transparent);
+        }
+
+        .nav-item.active i {
+            color: var(--primary);
+            text-shadow: 0 0 15px var(--primary-glow);
+        }
+
+        .nav-item.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 15%;
+            bottom: 15%;
+            width: 4px;
+            background: var(--primary);
+            border-radius: 0 4px 4px 0;
+            box-shadow: 2px 0 10px var(--primary-glow);
+        }
+
+        /* --- MAIN AREA --- */
+        .main-content {
+            flex: 1;
+            padding: 2.5rem 3.5rem;
+            width: calc(100% - 260px);
+            /* fallback */
+            width: 0;
+            /* allows grid to shrink properly if needed */
+            min-width: 0;
+            /* Flexbox trick for text overflow */
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 3rem;
+            border-bottom: 1px solid var(--border-subtle);
+            padding-bottom: 1.5rem;
+        }
+
+        .page-header h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .page-header p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .user-status {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            background: var(--bg-card);
+            padding: 0.5rem 0.75rem 0.5rem 1.25rem;
+            border-radius: 50px;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #333;
+            overflow: hidden;
+            border: 2px solid var(--bg-body);
+        }
+
+        /* --- LAYOUTS --- */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        @media(max-width: 1200px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media(max-width: 800px) {
+            body {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                padding: 1rem;
+                border-right: none;
+                border-bottom: 1px solid var(--border-subtle);
+            }
+
+            .main-content {
+                width: 100%;
+                padding: 1.5rem;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-menu {
+                flex-direction: row;
+                overflow-x: auto;
+                padding-bottom: 0.5rem;
+                gap: 0.5rem;
+            }
+
+            .nav-item {
+                padding: 0.5rem 1rem;
+                height: auto;
+                border-radius: 8px;
+                font-size: 0.8rem;
+                white-space: nowrap;
+            }
+
+            .nav-item i {
+                margin-right: 6px;
+                font-size: 1rem;
+            }
+
+            .nav-item.active::before {
+                bottom: 0;
+                top: auto;
+                width: 100%;
+                height: 3px;
+                left: 0;
+                border-radius: 3px 3px 0 0;
+            }
+
+            .brand-container {
+                margin-bottom: 1rem;
+                display: flex;
+                justify-content: center;
+            }
+
+            .brand {
+                font-size: 1.2rem;
+            }
+
+            /* Hide chart on very small screens if needed, or adjust height */
+            canvas {
+                max-height: 200px;
+            }
+        }
+
+        /* --- CARDS --- */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 1.75rem;
+            position: relative;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            border-color: var(--border-focus);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+            background: var(--bg-card-hover);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .card-title {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .stat-big {
+            font-family: 'Outfit', sans-serif;
+            font-size: 3rem;
+            font-weight: 600;
+            color: white;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        /* --- FORMS & INPUTS --- */
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .input-label {
+            display: block;
+            margin-bottom: 0.7rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        textarea {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border-subtle);
+            color: white;
+            padding: 1rem 1.25rem;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+        }
+
+        input:focus,
+        textarea:focus {
+            border-color: var(--primary);
+            background: rgba(83, 109, 254, 0.05);
+            box-shadow: 0 0 0 3px rgba(83, 109, 254, 0.1);
+        }
+
+        /* --- BUTTONS --- */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.75rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 15px rgba(83, 109, 254, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(83, 109, 254, 0.4);
+            filter: brightness(1.1);
+        }
+
+        .btn-danger {
+            background: rgba(255, 23, 68, 0.1);
+            color: var(--danger);
+            border: 1px solid rgba(255, 23, 68, 0.2);
+        }
+
+        .btn-danger:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-subtle);
+        }
+
+        .btn-ghost:hover {
+            border-color: white;
+            color: white;
+        }
+
+        /* --- INBOX LIST --- */
+        .mail-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .mail-item {
+            display: grid;
+            grid-template-columns: 50px 1fr auto;
+            gap: 1rem;
+            padding: 1.25rem;
+            background: var(--glass);
+            border-radius: 12px;
+            border: 1px solid transparent;
+            transition: all 0.2s;
+            align-items: center;
+        }
+
+        .mail-item:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--border-subtle);
+        }
+
+        .mail-item.unread {
+            border-left: 3px solid var(--accent);
+            background: rgba(0, 229, 255, 0.03);
+        }
+
+        .avatar-initial {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #1f1f2e, #141419);
+            color: var(--primary);
+            font-family: 'Outfit';
+            font-weight: 700;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--border-subtle);
+        }
+
+        /* --- PROJECTS GRID --- */
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .project-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--border-subtle);
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+        }
+
+        .p-body {
+            padding: 1.5rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .p-title {
+            font-family: 'Outfit';
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .p-desc {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 1.5rem;
+            flex: 1;
+        }
+
+        .tag-pill {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            color: #ccc;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* --- UTILITY --- */
+        .tab-section {
+            display: none;
+            animation: contentFade 0.4s ease forwards;
+        }
+
+        .tab-section.active {
+            display: block;
+        }
+
+        @keyframes contentFade {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* --- FullCalendar Theme Overrides --- */
+        .fc {
+            font-family: 'Plus Jakarta Sans', sans-serif !important;
+        }
+
+        .fc-theme-standard .fc-scrollgrid,
+        .fc-theme-standard td,
+        .fc-theme-standard th {
+            border-color: var(--border-subtle) !important;
+        }
+
+        .fc-col-header-cell {
+            background: rgba(255, 255, 255, 0.02);
+            padding: 10px 0;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+        }
+
+        .fc-day-today {
+            background: rgba(83, 109, 254, 0.05) !important;
+            /* Primary faint */
+        }
+
+        .fc-button-primary {
+            background-color: var(--bg-card) !important;
+            border-color: var(--border-subtle) !important;
+            color: var(--text-secondary) !important;
+            text-transform: capitalize;
+            font-weight: 500;
+        }
+
+        .fc-button-primary:hover,
+        .fc-button-primary.fc-button-active {
+            background-color: var(--primary) !important;
+            border-color: var(--primary) !important;
+            color: #fff !important;
+        }
+
+        .fc-event {
+            border: none !important;
+            border-radius: 4px;
+            padding: 2px 4px;
+            font-size: 0.85rem;
+        }
+
+        .fc-event-main {
+            color: white;
+        }
+
+        .fc-daygrid-event {
+            background-color: rgba(83, 109, 254, 0.2);
+            border-left: 3px solid var(--primary) !important;
+        }
+
+        .fc-timegrid-event {
+            background-color: var(--primary);
+        }
+
+        .fc-timegrid-slot-label-cushion,
+        .fc-timegrid-axis-cushion {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+    <nav class="sidebar">
+        <div class="brand-container">
+            <div class="brand">
+                SRI<div class="brand-dot"></div>
+            </div>
+        </div>
+
+        <div class="nav-menu">
+            <a onclick="switchTab('overview', this)" class="nav-item active">
+                <i class="fas fa-grid-2"></i> <span>Overview</span>
+            </a>
+            <a onclick="switchTab('inbox', this)" class="nav-item">
+                <i class="fas fa-inbox"></i> <span>Inbox</span>
+                <% if(typeof messages !=='undefined' && messages.some(m=> !m.read)) { %>
+                    <span
+                        style="margin-left:auto; width:6px; height:6px; background:var(--danger); border-radius:50%;"></span>
+                    <% } %>
+            </a>
+            <a onclick="switchTab('projects', this)" class="nav-item">
+                <i class="fas fa-folder-open"></i> <span>Projects</span>
+            </a>
+
+            <!-- NEW MODULES -->
+            <a onclick="switchTab('attendance', this)" class="nav-item">
+                <i class="fas fa-clock"></i> <span>Attendance</span>
+            </a>
+            <a onclick="switchTab('progress', this)" class="nav-item">
+                <i class="fas fa-tasks"></i> <span>Tracker</span>
+            </a>
+            <a onclick="switchTab('automation', this)" class="nav-item">
+                <i class="fas fa-robot"></i> <span>Auto-Bot</span>
+            </a>
+            <a onclick="switchTab('calendar', this)" class="nav-item">
+                <i class="fas fa-calendar-alt"></i> <span>Calendar</span>
+            </a>
+
+            <a onclick="switchTab('bio', this)" class="nav-item">
+                <i class="fas fa-pen-nib"></i> <span>Edit Content</span>
+            </a>
+            <a onclick="switchTab('settings', this)" class="nav-item">
+                <i class="fas fa-cog"></i> <span>Settings</span>
+            </a>
+        </div>
+
+        <div style="margin-top: auto;">
+            <a href="/logout" class="nav-item" style="color: var(--danger);">
+                <i class="fas fa-sign-out-alt"></i> <span>Log Out</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+        <!-- HEADER -->
+        <header class="top-bar">
+            <div class="page-header">
+                <h1 id="pageTitle">Overview</h1>
+                <p>Welcome back, Admin</p>
+            </div>
+
+            <div class="user-status">
+                <div style="text-align: right; line-height: 1.2;">
+                    <div style="font-weight: 600; font-size: 0.9rem;">Administrator</div>
+                    <div style="font-size: 0.75rem; color: var(--success);">● LIVE</div>
+                </div>
+                <div class="user-avatar">
+                    <img src="/assets/profile.jpg" alt="A" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+            </div>
+        </header>
+
+        <!-- 1. OVERVIEW -->
+        <section id="overview" class="tab-section active">
+            <div class="dashboard-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">Project Portfolio</span>
+                        <i class="fas fa-briefcase" style="color: var(--primary);"></i>
+                    </div>
+                    <div class="stat-big">
+                        <%= (typeof content.resume.projects !=='undefined' ) ? content.resume.projects.length : 0 %>
+                    </div>
+                    <div style="font-size: 0.9rem; color: var(--text-secondary);">Active case studies</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">Total Inquiries</span>
+                        <i class="fas fa-envelope" style="color: var(--accent);"></i>
+                    </div>
+                    <div class="stat-big">
+                        <%= (typeof messages !=='undefined' ) ? messages.length : 0 %>
+                    </div>
+                    <div style="font-size: 0.9rem; color: var(--text-secondary);">Messages received</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">System Health</span>
+                        <i class="fas fa-server" style="color: var(--success);"></i>
+                    </div>
+                    <div class="stat-big" style="color: var(--success); font-size: 1.8rem;">100%</div>
+                    <div style="font-size: 0.9rem; color: var(--text-secondary);">Uptime & Persistence</div>
+                </div>
+            </div>
+
+            <!-- Chart Only (Traffic) -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">Traffic Analytics</span>
+                </div>
+                <div style="height: 300px; width: 100%;">
+                    <canvas id="mainChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. INBOX -->
+        <section id="inbox" class="tab-section">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <h2>Messages</h2>
+                <span style="font-size: 0.9rem; color: var(--text-secondary);">
+                    <%= (typeof messages !=='undefined' ) ? messages.filter(m=>!m.read).length : 0 %> Unread
+                </span>
+            </div>
+
+            <div class="mail-list">
+                <% if(typeof messages !=='undefined' && messages.length> 0) { %>
+                    <% messages.forEach(msg=> { %>
+                        <div class="mail-item <%= msg.read ? '' : 'unread' %>">
+                            <div class="avatar-initial">
+                                <%= msg.name.charAt(0) %>
+                            </div>
+                            <div>
+                                <div style="display: flex; align-items: baseline; gap: 1rem; margin-bottom: 0.25rem;">
+                                    <h3 style="font-size: 1.1rem; color: white;">
+                                        <%= msg.name %>
+                                    </h3>
+                                    <span style="font-size: 0.85rem; color: var(--text-secondary);">
+                                        <%= msg.date %>
+                                    </span>
+                                </div>
+                                <div style="font-size: 0.9rem; color: var(--text-secondary);">
+                                    <%= msg.email %>
+                                </div>
+                                <p style="margin-top: 0.5rem; color: #ddd; line-height: 1.4;">
+                                    <%= msg.message %>
+                                </p>
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                                <% if(!msg.read) { %>
+                                    <form action="/admin/messages/read" method="POST">
+                                        <input type="hidden" name="id" value="<%= msg.id %>">
+                                        <button class="btn btn-ghost" style="width: 100%; font-size: 0.8rem;">Mark
+                                            Read</button>
+                                    </form>
+                                    <% } %>
+                                        <form action="/admin/messages/delete" method="POST"
+                                            onsubmit="return confirm('Archive this message?');">
+                                            <input type="hidden" name="id" value="<%= msg.id %>">
+                                            <button class="btn btn-danger" style="width: 100%; padding: 0.5rem;"><i
+                                                    class="fas fa-trash"></i></button>
+                                        </form>
+                            </div>
+                        </div>
+                        <% }) %>
+                            <% } else { %>
+                                <div style="text-align: center; padding: 4rem; color: var(--text-secondary);">
+                                    <i class="fas fa-inbox"
+                                        style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                                    <p>Inbox is empty</p>
+                                </div>
+                                <% } %>
+            </div>
+        </section>
+
+        <!-- 3. PROJECTS -->
+        <section id="projects" class="tab-section">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <h2>Projects</h2>
+                <button class="btn btn-primary" onclick="openProjectModal()">+ New Project</button>
+            </div>
+
+            <div class="project-grid">
+                <% if(typeof content.resume.projects !=='undefined' ) { %>
+                    <% content.resume.projects.forEach(proj=> { %>
+                        <div class="project-card">
+                            <div class="p-body">
+                                <h3 class="p-title">
+                                    <%= proj.title %>
+                                </h3>
+                                <p class="p-desc">
+                                    <%= proj.desc %>
+                                </p>
+                                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                                    <% proj.tags.forEach(t=> { %>
+                                        <span class="tag-pill">
+                                            <%= t %>
+                                        </span>
+                                        <% }) %>
+                                </div>
+                            </div>
+                            <div
+                                style="padding: 1rem; background: rgba(0,0,0,0.2); border-top: 1px solid var(--border-subtle); display: flex; justify-content: flex-end; gap: 0.5rem;">
+                                <!-- Edit Button passed full object as string (careful with quotes) -->
+                                <button class="btn btn-ghost" style="padding: 0.4rem 1rem; font-size: 0.8rem;"
+                                    onclick="openProjectModal('<%= proj.id %>')">
+                                    <i class="fas fa-edit"></i> Edit
+                                </button>
+                                <form action="/admin/projects/delete" method="POST"
+                                    onsubmit="return confirm('Remove this project?');" style="margin:0;">
+                                    <input type="hidden" name="id" value="<%= proj.id %>">
+                                    <button class="btn btn-danger"
+                                        style="padding: 0.4rem 1rem; font-size: 0.8rem;">Delete</button>
+                                </form>
+                            </div>
+                        </div>
+                        <% }) %>
+                            <% } %>
+            </div>
+
+            <!-- ADD/EDIT PROJECT MODAL -->
+            <div id="projectModal"
+                style="display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.8); z-index: 1000; align-items:center; justify-content:center;">
+                <div class="card" style="width: 500px; max-width: 90%;">
+                    <h3 id="projectModalTitle" style="margin-bottom: 1.5rem;">Create New Project</h3>
+                    <form id="projectForm" action="/admin/projects/add" method="POST">
+                        <input type="hidden" name="id" id="projectId">
+                        <div class="input-group">
+                            <label class="input-label">Project Title</label>
+                            <input type="text" name="title" id="projectTitle" required
+                                placeholder="e.g. Fintech Dashboard">
+                        </div>
+                        <div class="input-group">
+                            <label class="input-label">Tech Stack (Comma Separated)</label>
+                            <input type="text" name="tags" id="projectTags" placeholder="React, Node, SQL">
+                        </div>
+                        <div class="input-group">
+                            <label class="input-label">Key Highlights / Description</label>
+                            <textarea name="desc" id="projectDesc" rows="4" required
+                                placeholder="Describe the impact..."></textarea>
+                        </div>
+                        <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1rem;">
+                            <button type="button" class="btn btn-ghost"
+                                onclick="document.getElementById('projectModal').style.display='none'">Cancel</button>
+                            <button class="btn btn-primary" id="projectSubmitBtn">Publish Project</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- 4. BIO -->
+        <!-- 4. CONTENT MANAGEMENT (CMS) -->
+        <section id="bio" class="tab-section">
+            <div class="card" style="max-width: 900px; margin: 0 auto;">
+                <div class="card-header"
+                    style="border-bottom: 1px solid var(--border-subtle); padding-bottom: 1rem; margin-bottom: 2rem;">
+                    <h3 class="card-title" style="font-size: 1.2rem; color: white;">Global Content Manager</h3>
+                </div>
+
+                <!-- 1. HERO & INTRO -->
+                <form action="/admin/update-content" method="POST" style="margin-bottom: 3rem;">
+                    <h4 style="color: var(--primary); margin-bottom: 1rem;">Hompeage Hero Section</h4>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                        <div class="input-group">
+                            <label class="input-label">Hero Title (HTML Allowed)</label>
+                            <input type="text" name="hero[title]" value="<%= content.hero ? content.hero.title : '' %>">
+                        </div>
+                        <div class="input-group">
+                            <label class="input-label">Hero Subtitle</label>
+                            <input type="text" name="hero[subtitle]"
+                                value="<%= content.hero ? content.hero.subtitle : '' %>">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Hero Description</label>
+                        <textarea name="hero[desc]" rows="2"><%= content.hero ? content.hero.desc : '' %></textarea>
+                    </div>
+
+                    <h4 style="color: var(--accent); margin-bottom: 1rem; margin-top: 2rem;">About Section</h4>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                        <div class="input-group">
+                            <label class="input-label">About Name/Title</label>
+                            <input type="text" name="about[title]"
+                                value="<%= content.about ? content.about.title : '' %>">
+                        </div>
+                        <div class="input-group">
+                            <label class="input-label">About Subtitle</label>
+                            <input type="text" name="about[subtitle]"
+                                value="<%= content.about ? content.about.subtitle : '' %>">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Personal Bio (HTML Allowed)</label>
+                        <textarea name="about[bio]" rows="6"
+                            style="line-height: 1.6;"><%= content.about ? content.about.bio : content.bio %></textarea>
+                    </div>
+
+                    <div style="text-align: right;">
+                        <button class="btn btn-primary">Save Text Content</button>
+                    </div>
+                </form>
+
+                <!-- 2. RESUME UPLOAD -->
+                <div
+                    style="background: rgba(255,255,255,0.02); padding: 1.5rem; border-radius: 12px; margin-bottom: 3rem; border: 1px solid var(--border-subtle);">
+                    <h4 style="margin-bottom: 1rem; color: white;">Update PDF Resume</h4>
+                    <form action="/admin/resume" method="POST" enctype="multipart/form-data"
+                        style="display: flex; gap: 1rem; align-items: center;">
+                        <input type="file" name="resume" accept=".pdf" required
+                            style="flex: 1; background: transparent; border: none; padding: 0;">
+                        <button class="btn btn-ghost" style="padding: 0.5rem 1rem; font-size: 0.85rem;">Upload New
+                            PDF</button>
+                    </form>
+                </div>
+
+                <!-- 3. CERTIFICATIONS -->
+                <div style="border-top: 1px solid var(--border-subtle); padding-top: 2rem;">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <h4 style="color: white; margin: 0;">Certifications & Awards</h4>
+                        <button class="btn btn-primary"
+                            onclick="document.getElementById('addCertModal').style.display='flex'">+ Add New</button>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                        <% if(content.certifications && content.certifications.length> 0) { %>
+                            <% content.certifications.forEach(cert=> { %>
+                                <div
+                                    style="display: flex; justify-content: space-between; align-items: center; background: var(--glass); padding: 1rem; border-radius: 8px; border: 1px solid var(--border-subtle);">
+                                    <div style="display: flex; gap: 1rem; align-items: center;">
+                                        <div
+                                            style="width: 40px; height: 40px; background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; border-radius: 8px;">
+                                            <i class="<%= cert.icon %>"></i>
+                                        </div>
+                                        <div>
+                                            <div style="font-weight: 600;">
+                                                <%= cert.name %>
+                                            </div>
+                                            <div style="font-size: 0.8rem; color: var(--text-secondary);">
+                                                <%= cert.issuer %>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <form action="/admin/certifications/delete" method="POST"
+                                        onsubmit="return confirm('Delete this certification?');">
+                                        <input type="hidden" name="id" value="<%= cert.id %>">
+                                        <button class="btn btn-danger" style="padding: 0.4rem;"><i
+                                                class="fas fa-trash"></i></button>
+                                    </form>
+                                </div>
+                                <% }) %>
+                                    <% } else { %>
+                                        <div style="text-align: center; color: var(--text-secondary); padding: 1rem;">No
+                                            certifications added yet.</div>
+                                        <% } %>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ADD CERT MODAL -->
+            <div id="addCertModal"
+                style="display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.8); z-index: 1000; align-items:center; justify-content:center;">
+                <div class="card" style="width: 400px; max-width: 90%;">
+                    <h3 style="margin-bottom: 1.5rem;">Add Certification</h3>
+                    <form action="/admin/certifications/add" method="POST">
+                        <div class="input-group">
+                            <label class="input-label">Certification Name</label>
+                            <input type="text" name="name" required>
+                        </div>
+                        <div class="input-group">
+                            <label class="input-label">Issuer</label>
+                            <input type="text" name="issuer" required>
+                        </div>
+                        <div class="input-group">
+                            <label class="input-label">Icon Class (FontAwesome)</label>
+                            <input type="text" name="icon" placeholder="fa-solid fa-certificate"
+                                value="fa-solid fa-certificate">
+                        </div>
+                        <div class="input-group">
+                            <label class="input-label">Custom Style (CSS)</label>
+                            <input type="text" name="style" placeholder="border-color: gold; ...">
+                        </div>
+                        <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1rem;">
+                            <button type="button" class="btn btn-ghost"
+                                onclick="document.getElementById('addCertModal').style.display='none'">Cancel</button>
+                            <button class="btn btn-primary">Add Cert</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. ACADEMIC ATTENDANCE (GCAL SYNC) -->
+        <section id="attendance" class="tab-section">
+            <div class="card" style="margin-bottom: 2rem;">
+                <div class="card-header">
+                    <span class="card-title">Attendance Tracker</span>
+                    <button class="btn btn-primary"
+                        onclick="document.getElementById('addSubjectModal').style.display='flex'">
+                        + Add Subject
+                    </button>
+                </div>
+                <!-- Container for Async Loaded Content -->
+                <div id="attendanceContent"
+                    style="min-height: 200px; display: flex; flex-direction: column; gap: 1rem;">
+                    <div style="text-align: center; color: var(--text-secondary); padding: 2rem;">
+                        <i class="fas fa-sync fa-spin"></i> Syncing with Google Calendar...
+                    </div>
+                </div>
+            </div>
+
+            <!-- UNMARKED CLASSES -->
+            <div id="unmarkedSection" class="card" style="display: none;">
+                <div class="card-header"
+                    style="border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 1rem; margin-bottom: 1rem;">
+                    <span class="card-title" style="color: var(--warning);">⚠️ Unmarked Classes</span>
+                </div>
+                <div id="unmarkedList"></div>
+            </div>
+
+            <!-- ADD SUBJECT MODAL -->
+            <div id="addSubjectModal"
+                style="display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.8); z-index: 1000; align-items:center; justify-content:center;">
+                <div class="card" style="width: 400px; max-width: 90%;">
+                    <h3 style="margin-bottom: 1.5rem;">Track New Course</h3>
+                    <form action="/api/attendance/add" method="POST">
+                        <div class="input-group">
+                            <label class="input-label">Course Name</label>
+                            <input type="text" name="name" required placeholder="e.g. Calculus I">
+                        </div>
+                        <div class="input-group">
+                            <label class="input-label">Course Code (Calendar Match)</label>
+                            <input type="text" name="code" required placeholder="e.g. MAT101">
+                            <small style="color: var(--text-secondary); font-size: 0.8rem;">We'll look for this code in
+                                your Google Calendar events.</small>
+                        </div>
+                        <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1rem;">
+                            <button type="button" class="btn btn-ghost"
+                                onclick="document.getElementById('addSubjectModal').style.display='none'">Cancel</button>
+                            <button class="btn btn-primary">Start Tracking</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. TRACKER V4: HYBRID SYSTEM -->
+        <section id="progress" class="tab-section">
+            <style>
+                .tracker-layout {
+                    display: grid;
+                    grid-template-columns: 3fr 1fr;
+                    gap: 1.5rem;
+                    height: calc(100vh - 180px);
+                }
+
+                .tracker-matrix-wrapper {
+                    display: flex;
+                    flex-direction: column;
+                    background: var(--bg-card);
+                    border: 1px solid var(--border-subtle);
+                    border-radius: 12px;
+                    overflow: hidden;
+                    height: 100%;
+                }
+
+                .tracker-header-controls {
+                    padding: 1rem;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    border-bottom: 1px solid var(--border-subtle);
+                }
+
+                .tracker-grid-container {
+                    flex: 1;
+                    overflow: auto;
+                    position: relative;
+                    scroll-behavior: smooth;
+                }
+
+                .tracker-sidebar {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 1rem;
+                    overflow-y: auto;
+                    padding-right: 5px;
+                }
+
+                .tracker-layout {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 1.5rem;
+                    height: auto;
+                }
+
+                .tracker-chart-full {
+                    width: 100%;
+                    background: rgba(16, 16, 24, 0.6);
+                    backdrop-filter: blur(12px);
+                    border: 1px solid rgba(255, 255, 255, 0.05);
+                    border-radius: 16px;
+                    padding: 1.5rem;
+                    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+                    min-height: 380px;
+                }
+
+                .tracker-matrix-wrapper {
+                    display: flex;
+                    flex-direction: column;
+                    background: rgba(16, 16, 24, 0.6);
+                    backdrop-filter: blur(12px);
+                    border: 1px solid rgba(255, 255, 255, 0.05);
+                    border-radius: 16px;
+                    width: 100%;
+                    min-height: 400px;
+                    height: auto;
+                    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+                    margin-bottom: 1.5rem;
+                    overflow: visible;
+                }
+
+                .tracker-bottom-grid {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr 1fr;
+                    gap: 1.5rem;
+                    margin-top: 1.5rem;
+                }
+
+                .tracker-header-controls {
+                    padding: 1.2rem;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+                    background: rgba(255, 255, 255, 0.02);
+                }
+
+                .tracker-grid-container {
+                    width: 100%;
+                    overflow: auto;
+                    position: relative;
+                    scroll-behavior: smooth;
+                    max-height: 1000px;
+                }
+
+                .tracker-grid-container::-webkit-scrollbar {
+                    width: 8px;
+                    height: 8px;
+                }
+
+                .tracker-grid-container::-webkit-scrollbar-track {
+                    background: rgba(0, 0, 0, 0.2);
+                }
+
+                .tracker-grid-container::-webkit-scrollbar-thumb {
+                    background: rgba(255, 215, 0, 0.15);
+                    border-radius: 10px;
+                }
+
+                .tracker-grid-container::-webkit-scrollbar-thumb:hover {
+                    background: var(--primary);
+                }
+
+                .tracker-sidebar-compact {
+                    display: grid;
+                    grid-template-columns: 1fr 2fr;
+                    gap: 1.5rem;
+                }
+
+                .tracker-analog-footer {
+                    display: none;
+                    /* Replaced by bottom-grid */
+                }
+
+
+                /* Grid Table */
+                .t-table {
+                    border-collapse: separate;
+                    border-spacing: 0;
+                    min-width: 100%;
+                }
+
+                .t-cell {
+                    border-right: 1px solid rgba(255, 255, 255, 0.05);
+                    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+                    padding: 0;
+                    text-align: center;
+                    position: relative;
+                    height: 54px;
+                    /* Slightly taller for better touch targets */
+                    transition: background 0.2s;
+                }
+
+                tr:hover .t-cell {
+                    background: rgba(255, 255, 255, 0.01);
+                }
+
+                .t-head-date {
+                    position: sticky;
+                    top: 0;
+                    background: #0d0d12;
+                    z-index: 30;
+                    /* Higher than sticky col */
+                    font-weight: 700;
+                    font-size: 0.7rem;
+                    height: 60px;
+                    color: rgba(255, 255, 255, 0.4);
+                    border-bottom: 2px solid rgba(255, 215, 0, 0.1);
+                    text-transform: uppercase;
+                    letter-spacing: 1px;
+                }
+
+                .t-col-habit {
+                    position: sticky;
+                    left: 0;
+                    background: #121218;
+                    z-index: 21;
+                    text-align: left;
+                    padding: 0 1.8rem;
+                    min-width: 280px;
+                    /* Wider for labels */
+                    border-right: 3px solid var(--primary);
+                    /* Stronger accent vertical */
+                    font-family: 'Outfit';
+                    font-weight: 600;
+                    font-size: 1rem;
+                    color: #fff;
+                    box-shadow: 10px 0 15px -10px rgba(0, 0, 0, 0.5);
+                }
+
+                .t-cell-check {
+                    width: 100%;
+                    height: 100%;
+                    cursor: pointer;
+                    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+
+                .t-cell-check:hover {
+                    background: rgba(0, 229, 255, 0.1);
+                }
+
+                .t-cell-check.checked {
+                    background: linear-gradient(135deg, var(--accent), #00b8d4);
+                    box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.2), 0 0 15px rgba(0, 229, 255, 0.4);
+                }
+
+                .t-cell-check.checked::after {
+                    content: '\f00c';
+                    /* FontAwesome Check */
+                    font-family: 'Font Awesome 5 Free';
+                    font-weight: 900;
+                    font-size: 0.9rem;
+                    color: white;
+                }
+
+                .btn-reset-zoom {
+                    font-size: 0.65rem;
+                    padding: 4px 10px;
+                    border-radius: 4px;
+                    background: rgba(255, 255, 255, 0.05);
+                    border: 1px solid rgba(255, 255, 255, 0.1);
+                    color: var(--text-secondary);
+                    cursor: pointer;
+                    transition: 0.3s;
+                }
+
+                .btn-reset-zoom:hover {
+                    background: var(--primary);
+                    color: white;
+                    border-color: var(--primary);
+                }
+
+                /* Analog Cards */
+                .analog-card {
+                    background: rgba(16, 16, 24, 0.6);
+                    backdrop-filter: blur(12px);
+                    border: 1px solid rgba(255, 255, 255, 0.05);
+                    border-radius: 16px;
+                    padding: 1.5rem;
+                    display: flex;
+                    flex-direction: column;
+                    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+                    transition: transform 0.3s;
+                }
+
+                .analog-card:hover {
+                    transform: translateY(-5px);
+                    border-color: rgba(255, 215, 0, 0.2);
+                }
+
+                .card-title {
+                    font-family: 'Outfit';
+                    font-weight: 700;
+                    font-size: 1.1rem;
+                    margin-bottom: 1.2rem;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    color: var(--primary);
+                    /* Gold */
+                }
+            </style>
+
+            <div style="display: flex; flex-direction: column; height: 100%;">
+
+                <!-- 1. Header & Controls -->
+                <div style="margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h2 style="font-family: 'Outfit'; font-weight: 700; font-size: 1.8rem; margin: 0;">Habit
+                            Operations</h2>
+                        <span style="color: var(--text-secondary); font-size: 0.9rem;">Hybrid Digital/Analog Tracking
+                            System</span>
+                    </div>
+                    <div
+                        style="display: flex; gap: 1rem; align-items: center; background: var(--bg-card); padding: 0.5rem 1rem; border-radius: 50px; border: 1px solid var(--border-subtle);">
+                        <button class="btn btn-ghost" onclick="changeMonth(-1)"><i
+                                class="fas fa-chevron-left"></i></button>
+                        <span id="trackerMonthLabel"
+                            style="font-weight: 600; min-width: 120px; text-align: center;">January 2026</span>
+                        <button class="btn btn-ghost" onclick="changeMonth(1)"><i
+                                class="fas fa-chevron-right"></i></button>
+                    </div>
+                </div>
+
+                <!-- 2. Main Layout (Sequential Full Width) -->
+                <div class="tracker-layout">
+
+                    <!-- A. CONSISTENCY FLOW (Full Width) -->
+                    <div class="tracker-chart-full">
+                        <div class="card-title">
+                            <span>Consistency Flow Timeline</span>
+                            <div
+                                style="display: flex; gap: 1rem; align-items: center; font-size: 0.75rem; color: var(--text-secondary); font-weight: normal;">
+                                <button class="btn-reset-zoom" onclick="charts.consistency.resetZoom()"><i
+                                        class="fas fa-undo"></i> Reset Zoom</button>
+                                <span><i class="fas fa-search-plus"></i> Scroll to Zoom</span>
+                                <span><i class="fas fa-mouse-pointer"></i> Double-Click to Reset</span>
+                            </div>
+                        </div>
+                        <div style="height: 280px; position: relative;">
+                            <canvas id="chartConsistency"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- B. THE MATRIX (Full Width) -->
+                    <div class="tracker-matrix-wrapper">
+                        <div class="tracker-header-controls">
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <span style="font-weight: 700; color: #fff;">CORE ROUTINES & HABITS</span>
+                                <span
+                                    style="font-size: 0.75rem; color: var(--text-secondary); background: rgba(255,255,255,0.05); padding: 2px 10px; border-radius: 20px;">DYNAMIC
+                                    MATRIX</span>
+                            </div>
+                        </div>
+
+                        <div class="tracker-grid-container" id="trackerGridScroll">
+                            <table class="t-table">
+                                <thead id="gridHeader"></thead>
+                                <tbody id="gridBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- C. ANALYTICS ROW -->
+                    <div class="tracker-bottom-grid">
+                        <!-- Win Rate Card -->
+                        <div class="analog-card"
+                            style="display: flex; flex-direction: row; align-items: center; gap: 2rem;">
+                            <div style="width: 100px; height: 100px; position: relative;">
+                                <canvas id="chartWinRate"></canvas>
+                            </div>
+                            <div style="flex: 1;">
+                                <div class="card-title" style="margin-bottom: 0.2rem;">Win Rate</div>
+                                <div style="font-size: 2.2rem; font-weight: 800; color: var(--primary);"
+                                    id="txtWinRate">0%</div>
+                                <div style="font-size: 0.75rem; color: var(--text-secondary);">Execution Rate</div>
+                            </div>
+                        </div>
+
+                        <!-- Performance Metrics -->
+                        <div class="analog-card" style="grid-column: span 2;">
+                            <div class="card-title">
+                                <span>Real-Time Performance Metrics</span>
+                                <i class="fas fa-microchip"></i>
+                            </div>
+                            <div
+                                style="flex: 1; display: flex; align-items: flex-end; gap: 2rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 1.5rem; justify-content: space-around;">
+                                <div
+                                    style="flex: 1; max-width: 120px; display: flex; flex-direction: column; align-items: center; gap: 0.8rem;">
+                                    <div
+                                        style="width: 100%; background: rgba(255,100,100,0.1); border-radius: 8px; height: 160px; position: relative; overflow: hidden; border: 1px solid rgba(255,82,82,0.1);">
+                                        <div id="metricStressBar"
+                                            style="position: absolute; bottom: 0; width: 100%; background: linear-gradient(0deg, #b71c1c, #ff5252); height: 40%; box-shadow: 0 0 20px rgba(255,82,82,0.4); transition: height 1s cubic-bezier(0.4, 0, 0.2, 1);">
+                                        </div>
+                                    </div>
+                                    <span
+                                        style="font-size: 0.75rem; font-weight: 700; color: #ff5252; letter-spacing: 1px;">STRESS
+                                        <span id="metricStressVal">40%</span></span>
+                                </div>
+                                <div
+                                    style="flex: 1; max-width: 120px; display: flex; flex-direction: column; align-items: center; gap: 0.8rem;">
+                                    <div
+                                        style="width: 100%; background: rgba(100,255,100,0.1); border-radius: 8px; height: 160px; position: relative; overflow: hidden; border: 1px solid rgba(0,230,118,0.1);">
+                                        <div id="metricFocusBar"
+                                            style="position: absolute; bottom: 0; width: 100%; background: linear-gradient(0deg, #1b5e20, #00e676); height: 75%; box-shadow: 0 0 20px rgba(0,230,118,0.4); transition: height 1s cubic-bezier(0.4, 0, 0.2, 1);">
+                                        </div>
+                                    </div>
+                                    <span
+                                        style="font-size: 0.75rem; font-weight: 700; color: #00e676; letter-spacing: 1px;">FOCUS
+                                        <span id="metricFocusVal">75%</span></span>
+                                </div>
+                                <div
+                                    style="flex: 1; max-width: 120px; display: flex; flex-direction: column; align-items: center; gap: 0.8rem;">
+                                    <div
+                                        style="width: 100%; background: rgba(100,100,255,0.1); border-radius: 8px; height: 160px; position: relative; overflow: hidden; border: 1px solid rgba(41,121,255,0.1);">
+                                        <div id="metricRecoveryBar"
+                                            style="position: absolute; bottom: 0; width: 100%; background: linear-gradient(0deg, #0d47a1, #2979ff); height: 60%; box-shadow: 0 0 20px rgba(41,121,255,0.4); transition: height 1s cubic-bezier(0.4, 0, 0.2, 1);">
+                                        </div>
+                                    </div>
+                                    <span
+                                        style="font-size: 0.75rem; font-weight: 700; color: #2979ff; letter-spacing: 1px;">RECOVERY
+                                        <span id="metricRecoveryVal">60%</span></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- D. SECONDARY ROW -->
+                    <div class="tracker-bottom-grid" style="margin-top: 0;">
+                        <!-- Protocols -->
+                        <div class="analog-card">
+                            <div class="card-title">
+                                <span>Daily Protocols</span>
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <div id="protocolList"></div>
+                        </div>
+                        <!-- Top Habits -->
+                        <div class="analog-card" style="grid-column: span 2;">
+                            <div class="card-title">Top Performing Habits</div>
+                            <div id="topHabitsList" style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem;">
+                                <!-- Injected -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- 8. AUTOMATION BOT -->
+        <section id="automation" class="tab-section">
+            <div class="card"
+                style="background: #0f0f13; border: 1px solid #333; font-family: 'Courier New', monospace;">
+                <div
+                    style="display: flex; justify-content: space-between; margin-bottom: 1rem; border-bottom: 1px solid #333; padding-bottom: 1rem;">
+                    <span style="color: var(--success);">● BOT_V1.0 ONLINE</span>
+                    <span style="color: var(--text-secondary);">ID: #8829-X</span>
+                </div>
+
+                <div id="botConsole"
+                    style="height: 300px; overflow-y: auto; color: #ccc; font-size: 0.9rem; margin-bottom: 1rem; padding-right: 0.5rem;">
+                    <div style="margin-bottom: 0.5rem;">[SYSTEM] Initializing Job Automation Protocol...</div>
+                    <div style="margin-bottom: 0.5rem;">[SYSTEM] LinkedIn API: Disconnected</div>
+                    <div style="margin-bottom: 0.5rem;">[SYSTEM] Waiting for command...</div>
+                </div>
+
+                <div style="display: flex; gap: 1rem;">
+                    <button class="btn btn-ghost" onclick="botCmd('scan_jobs')">Scan Job Boards</button>
+                    <button class="btn btn-ghost" onclick="botCmd('optimize_resume')">Optimize Resume</button>
+                    <button class="btn btn-ghost" onclick="botCmd('auto_apply')">Auto-Apply (Sim)</button>
+                    <button class="btn btn-danger" onclick="botCmd('clear')">Clear Log</button>
+                </div>
+        </section>
+
+        <!-- 9. GOOGLE CALENDAR (NEW) -->
+        <section id="calendar" class="tab-section">
+            <div class="card" style="height: 80vh; display: flex; flex-direction: column;">
+                <div class="card-header">
+                    <span class="card-title">Schedule & Events</span>
+                    <% if(!googleLinked) { %>
+                        <a href="/auth/google" class="btn btn-primary" style="font-size: 0.8rem;">
+                            <i class="fab fa-google"></i> Connect Google Calendar
+                        </a>
+                        <% } else { %>
+                            <button class="btn btn-primary" onclick="showAddEventModal()">
+                                <i class="fas fa-plus"></i> Add Event
+                            </button>
+                            <% } %>
+                </div>
+
+                <!-- Always show calendar container -->
+                <div id="calendarView" style="flex: 1; color: white;"></div>
+            </div>
+
+            <!-- ADD EVENT MODAL (Simple overlay) -->
+            <div id="eventModal"
+                style="display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.8); z-index: 1000; align-items:center; justify-content:center;">
+                <div class="card" style="width: 400px; max-width: 90%;">
+                    <h3 style="margin-bottom: 1.5rem;">Add New Event</h3>
+                    <form action="/api/calendar/add" method="POST">
+                        <div class="input-group">
+                            <label class="input-label">Event Title</label>
+                            <input type="text" name="summary" required>
+                        </div>
+                        <div class="input-group">
+                            <label class="input-label">Start</label>
+                            <input type="datetime-local" name="startDateTime" required style="color-scheme: dark;">
+                        </div>
+                        <div class="input-group">
+                            <label class="input-label">End</label>
+                            <input type="datetime-local" name="endDateTime" required style="color-scheme: dark;">
+                        </div>
+                        <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1rem;">
+                            <button type="button" class="btn btn-ghost"
+                                onclick="document.getElementById('eventModal').style.display='none'">Cancel</button>
+                            <button class="btn btn-primary">Save Event</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- 5. SETTINGS -->
+        <section id="settings" class="tab-section">
+            <div class="card" style="max-width: 500px; margin: 0 auto;">
+                <h3 style="margin-bottom: 2rem; font-family: 'Outfit';">Security Settings</h3>
+                <form action="/admin/settings/password" method="POST">
+                    <div class="input-group">
+                        <label class="input-label">New Admin Password</label>
+                        <input type="password" name="newPassword" required placeholder="••••••••">
+                    </div>
+                    <div class="input-group" style="margin-bottom: 2rem;">
+                        <label class="input-label">Confirm Password</label>
+                        <input type="password" name="confirm" required placeholder="••••••••">
+                    </div>
+                    <button class="btn btn-primary" style="width: 100%;">Update Security Info</button>
+                </form>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        function showAddEventModal() {
+            document.getElementById('eventModal').style.display = 'flex';
+        }
+
+        // CALENDAR INIT
+        document.addEventListener('DOMContentLoaded', function () {
+            // 1. Check URL for Tab
+            const urlParams = new URLSearchParams(window.location.search);
+            const activeTab = urlParams.get('tab');
+            if (activeTab) {
+                switchTab(activeTab);
+            }
+
+            // 2. Init Calendar if visible or just prepared
+            var calendarEl = document.getElementById('calendarView');
+            if (calendarEl) {
+                var calendar = new FullCalendar.Calendar(calendarEl, {
+                    initialView: 'dayGridMonth',
+                    headerToolbar: {
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                    },
+                    height: '100%',
+                    navLinks: true, // can click day/week names to navigate views
+                    editable: true,
+                    selectable: true,
+                    selectMirror: true,
+                    dayMaxEvents: true, // allow "more" link when too many events
+
+                    // 24-Hour Settings
+                    slotMinTime: '00:00:00',
+                    slotMaxTime: '24:00:00',
+                    scrollTime: '08:00:00', // Start scroll at 8am but allow scrolling up to 00:00
+                    expandRows: true, // Stretch to fit height
+
+                    // Open Modal on Date Click
+                    select: function (arg) {
+                        // Pre-fill dates if possible (requires input IDs)
+                        // For now just open modal
+                        showAddEventModal();
+                        calendar.unselect();
+                    },
+                    events: function (info, successCallback, failureCallback) {
+                        fetch(`/api/calendar/events?start=${info.startStr}&end=${info.endStr}`)
+                            .then(res => res.json())
+                            .then(data => {
+                                if (data.needsAuth) {
+                                    successCallback([]); // Return empty if not auth'd
+                                } else if (data.events) {
+                                    successCallback(data.events);
+                                } else {
+                                    successCallback([]);
+                                }
+                            })
+                            .catch(err => {
+                                console.error(err);
+                                failureCallback(err);
+                            });
+                    },
+                    themeSystem: 'standard'
+                });
+                // Hack to render properly when tab switches
+                window.renderCalendar = function () {
+                    setTimeout(() => calendar.render(), 100);
+                };
+
+                // If calendar tab was auto-selected, render it now
+                if (activeTab === 'calendar') window.renderCalendar();
+            }
+        });
+
+        // ATTENDANCE SYNC LOGIC
+        async function syncAttendance() {
+            const container = document.getElementById('attendanceContent');
+            const unmarkedContainer = document.getElementById('unmarkedSection');
+            const unmarkedList = document.getElementById('unmarkedList');
+
+            try {
+                const res = await fetch('/api/attendance');
+                const data = await res.json();
+
+                if (data.needsAuth) {
+                    container.innerHTML = '<div style="text-align:center;"><a href="/auth/google" class="btn btn-primary">Connect Google Calendar First</a></div>';
+                    return;
+                }
+
+                if (data.subjects && data.subjects.length > 0) {
+                    let html = '';
+                    // Stats Cards
+                    html += '<div class="dashboard-grid" style="grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));">';
+                    data.subjects.forEach(sub => {
+                        const stat = data.stats[sub.id] || { attended: 0, total: 0, pct: 0 };
+                        let color = stat.pct >= 75 ? 'var(--success)' : (stat.pct >= 60 ? 'var(--accent)' : 'var(--danger)');
+
+                        html += `
+                            <div class="card">
+                                <div style="display:flex; justify-content:space-between; margin-bottom:0.5rem;">
+                                    <strong>${sub.name}</strong>
+                                    <span style="color:var(--text-secondary);">${sub.code}</span>
+                                </div>
+                                <div style="font-size: 2rem; color:${color}; font-weight:bold;">${stat.pct}%</div>
+                                <div style="color:var(--text-secondary);">
+                                    ${stat.attended} / ${stat.total} Attended
+                                </div>
+                                <form action="/api/attendance/delete" method="POST" onsubmit="return confirm('Delete?')" style="margin-top:1rem;">
+                                    <input type="hidden" name="id" value="${sub.id}">
+                                    <button class="btn btn-ghost" style="padding: 0.2rem 0.5rem; font-size: 0.8rem;">Delete</button>
+                                </form>
+                            </div>
+                        `;
+                    });
+                    html += '</div>';
+                    container.innerHTML = html;
+
+                    // Unmarked List
+                    if (data.unmarkedEvents && data.unmarkedEvents.length > 0) {
+                        unmarkedContainer.style.display = 'block';
+                        unmarkedList.innerHTML = data.unmarkedEvents.map(ev => `
+                            <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.03); padding:0.8rem; margin-bottom:0.5rem; border-radius:8px;">
+                                <div>
+                                    <div style="font-weight:bold; color:white;">${ev.summary}</div>
+                                    <div style="font-size:0.8rem; color:var(--text-secondary);">${new Date(ev.start).toLocaleString()}</div>
+                                </div>
+                                <div style="display:flex; gap:0.5rem;">
+                                    <button onclick="markEvent('${ev.eventId}', '${ev.subjectId}', 'present')" class="btn" style="background:rgba(0,255,0,0.1); color:var(--success);">Present</button>
+                                    <button onclick="markEvent('${ev.eventId}', '${ev.subjectId}', 'absent')" class="btn" style="background:rgba(255,0,0,0.1); color:var(--danger);">Absent</button>
+                                </div>
+                            </div>
+                        `).join('');
+                    } else {
+                        unmarkedContainer.style.display = 'none';
+                    }
+
+                } else {
+                    container.innerHTML = '<div style="text-align:center; padding:2rem; opacity:0.6;">No subjects added. Click "+ Add Subject" to start tracking.</div>';
+                }
+            } catch (e) {
+                console.error(e);
+                container.innerHTML = '<div style="color:var(--danger);">Error syncing attendance.</div>';
+            }
+        }
+
+        async function markEvent(eventId, subjectId, status) {
+            await fetch('/api/attendance/mark-event', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ eventId, subjectId, status })
+            });
+            syncAttendance(); // Refresh
+        }
+
+        // TABS (Modified to trigger calendar render AND attendance sync)
+        function switchTab(id, el) {
+            document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+            document.getElementById(id).classList.add('active');
+            if (el) el.classList.add('active');
+
+            document.getElementById('pageTitle').innerText = id === 'bio' ? 'Content Management' : (id.charAt(0).toUpperCase() + id.slice(1));
+
+            if (id === 'calendar' && window.renderCalendar) window.renderCalendar();
+            if (id === 'attendance') syncAttendance();
+        }
+
+        // CHART
+        const ctx = document.getElementById('mainChart');
+        if (ctx) {
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        label: 'Visitors',
+                        data: [150, 230, 180, 320, 290, 450, 500],
+                        borderColor: '#536dfe',
+                        backgroundColor: (ctx) => {
+                            const bg = ctx.chart.ctx.createLinearGradient(0, 0, 0, 250);
+                            bg.addColorStop(0, 'rgba(83, 109, 254, 0.4)');
+                            bg.addColorStop(1, 'rgba(83, 109, 254, 0)');
+                            return bg;
+                        },
+                        tension: 0.4,
+                        fill: true,
+                        pointBackgroundColor: '#050507',
+                        pointBorderColor: '#536dfe',
+                        pointBorderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { grid: { display: false }, ticks: { color: '#666' } },
+                        y: { border: { display: false }, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#666' } }
+                    }
+                }
+            });
+        }
+
+        // --- TRACKER V4: HYBRID ENGINE ---
+        let trackerData = { template: [], logs: {}, goals: {}, protocols: {}, moods: {}, achievements: [] };
+        let currentDate = new Date(); // Represents the layout month
+        let charts = {}; // Store Chart instances
+
+        function getDatestamp(d) {
+            return d.toISOString().split('T')[0];
+        }
+
+        async function initTracker() {
+            try {
+                const res = await fetch('/api/tracker');
+                trackerData = await res.json();
+
+                // Init Defaults if missing
+                if (!trackerData.goals) trackerData.goals = {};
+                if (!trackerData.protocols) trackerData.protocols = {};
+                if (!trackerData.moods) trackerData.moods = {};
+
+                renderTracker(); // Render All Components
+            } catch (e) {
+                console.error("Tracker Init Error", e);
+            }
+        }
+
+        function changeMonth(delta) {
+            currentDate.setMonth(currentDate.getMonth() + delta);
+            renderTracker();
+        }
+
+        function renderTracker() {
+            const dateLabel = document.getElementById('trackerMonthLabel');
+            if (dateLabel) dateLabel.innerText = currentDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+
+            renderGrid();
+            renderAnalytics();
+            renderAnalog();
+        }
+
+        // 1. RENDER GRID (99 Habits)
+        function renderGrid() {
+            const header = document.getElementById('gridHeader');
+            const body = document.getElementById('gridBody');
+            if (!header || !body) return;
+
+            header.innerHTML = '';
+            body.innerHTML = '';
+
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const todayStr = getDatestamp(new Date());
+
+            // --- OPTIMIZATION: Pre-process logs for O(1) lookup ---
+            const monthCache = {};
+            for (let d = 1; d <= daysInMonth; d++) {
+                const date = new Date(year, month, d);
+                const dStr = getDatestamp(date);
+                monthCache[dStr] = {};
+                if (trackerData.logs[dStr] && trackerData.logs[dStr].tasks) {
+                    trackerData.logs[dStr].tasks.forEach(t => {
+                        if (t.status === 'executed') monthCache[dStr][t.name] = true;
+                    });
+                }
+            }
+
+            // --- HEADERS ---
+            const trHead = document.createElement('tr');
+            // Sticky Corner
+            const thCorner = document.createElement('th');
+            thCorner.className = 't-col-habit';
+            thCorner.innerText = "HABIT";
+            thCorner.style.zIndex = '30';
+            trHead.appendChild(thCorner);
+
+            for (let d = 1; d <= daysInMonth; d++) {
+                const date = new Date(year, month, d);
+                const dStr = getDatestamp(date);
+                const th = document.createElement('th');
+                th.className = 't-head-date';
+                th.innerText = d;
+
+                // Highlight Today
+                if (dStr === todayStr) {
+                    th.style.color = 'var(--accent)';
+                    th.style.borderBottom = '2px solid var(--accent)';
+                }
+                trHead.appendChild(th);
+            }
+            header.appendChild(trHead);
+
+            // --- ROWS ---
+            if (trackerData.template.length === 0) {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td colspan="${daysInMonth + 1}" style="padding:2rem; text-align:center; color:var(--text-secondary);">No habits defined. Click "Add Habit" to start.</td>`;
+                body.appendChild(tr);
+                return;
+            }
+
+            trackerData.template.forEach(habit => {
+                const tr = document.createElement('tr');
+
+                // Habit Name (Sticky Left)
+                const tdName = document.createElement('td');
+                tdName.className = 't-col-habit t-cell';
+                tdName.style.display = 'flex';
+                tdName.style.alignItems = 'center';
+                tdName.style.justifyContent = 'space-between';
+                tdName.innerHTML = `<span>${habit}</span> <i class="fas fa-trash" style="font-size:0.7rem; opacity:0.3; cursor:pointer;" onclick="deleteHabit('${habit}')"></i>`;
+                tr.appendChild(tdName);
+
+                // Checkboxes
+                for (let d = 1; d <= daysInMonth; d++) {
+                    const date = new Date(year, month, d);
+                    const dStr = getDatestamp(date);
+                    const td = document.createElement('td');
+                    td.className = 't-cell';
+
+                    // Check status (Optimized O(1))
+                    let isChecked = false;
+                    if (monthCache[dStr] && monthCache[dStr][habit]) {
+                        isChecked = true;
+                    }
+
+                    // Clickable Cell
+                    const cellDiv = document.createElement('div');
+                    cellDiv.className = `t-cell-check ${isChecked ? 'checked' : ''}`;
+                    cellDiv.style.height = '100%';
+                    cellDiv.onclick = () => toggleGridCheck(dStr, habit);
+
+                    // Future Lock
+                    if (date > new Date()) {
+                        cellDiv.style.opacity = '0.1';
+                        cellDiv.style.pointerEvents = 'none';
+                    }
+
+                    td.appendChild(cellDiv);
+                    tr.appendChild(td);
+                }
+                body.appendChild(tr);
+            });
+
+            // --- INLINE ADDITION ROW ---
+            const trAdd = document.createElement('tr');
+            const tdInput = document.createElement('td');
+            tdInput.className = 't-col-habit t-cell';
+            tdInput.style.padding = '0';
+            tdInput.innerHTML = `
+                <div style="display:flex; align-items:center; width:100%; height:100%; background:rgba(255,255,255,0.02); padding:0 1rem; border:1px solid rgba(83,109,254,0.1); border-radius:4px;">
+                    <input type="text" id="inputInlineHabit" placeholder="+ Add New Habit..." 
+                        style="background:transparent; border:none; color:#fff; width:100%; outline:none; font-size:0.85rem;"
+                        onkeydown="if(event.key==='Enter') submitInlineHabit()">
+                    <i class="fas fa-plus" style="color:var(--primary); cursor:pointer; font-size:0.8rem;" onclick="submitInlineHabit()"></i>
+                </div>
+            `;
+            trAdd.appendChild(tdInput);
+
+            // Empty cells for the rest of the row
+            for (let d = 1; d <= daysInMonth; d++) {
+                const td = document.createElement('td');
+                td.className = 't-cell';
+                td.style.background = 'rgba(255,255,255,0.01)';
+                trAdd.appendChild(td);
+            }
+            body.appendChild(trAdd);
+        }
+
+        async function toggleGridCheck(dateStr, habitName) {
+            // Auto-init log if needed
+            if (!trackerData.logs[dateStr]) {
+                trackerData.logs[dateStr] = { tasks: [], score: 0 };
+            }
+            let log = trackerData.logs[dateStr];
+            let task = log.tasks.find(t => t.name === habitName);
+
+            // If task doesn't exist in log, create it
+            if (!task) {
+                task = { name: habitName, status: 'to-do' };
+                log.tasks.push(task);
+            }
+
+            // Toggle
+            task.status = (task.status === 'executed') ? 'to-do' : 'executed';
+
+            // Recalc Score
+            const total = trackerData.template.length;
+            const executed = log.tasks.filter(t => t.status === 'executed').length;
+            log.score = total > 0 ? Math.round((executed / total) * 100) : 0;
+
+            // Updated Optimistic Render
+            // Re-render only this cell? Complex. Re-render Grid is safer.
+            // But to avoid scroll jump, we could just update style. 
+            // For MVP speed, re-render whole Grid is fine if performance holds.
+            renderGrid();
+            renderAnalytics();
+
+            // Save
+            await fetch('/api/tracker/save', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ date: dateStr, log })
+            });
+        }
+
+        async function submitInlineHabit() {
+            const input = document.getElementById('inputInlineHabit');
+            const name = input.value.trim();
+            if (name) {
+                trackerData.template.push(name);
+                input.value = '';
+                renderTracker();
+                await fetch('/api/tracker/template', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ template: trackerData.template })
+                });
+            }
+        }
+
+        async function deleteHabit(name) {
+            if (!confirm(`Delete habit "${name}" from your template?`)) return;
+            trackerData.template = trackerData.template.filter(t => t !== name);
+            renderTracker();
+            await fetch('/api/tracker/template', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ template: trackerData.template })
+            });
+        }
+
+        // 2. RENDER ANALYTICS (Charts)
+        function renderAnalytics() {
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const labels = [];
+            const dataConsistency = [];
+            let totalChecks = 0;
+            let possibleChecks = 0;
+
+            for (let d = 1; d <= daysInMonth; d++) {
+                labels.push(d);
+                const dStr = getDatestamp(new Date(year, month, d));
+                const log = trackerData.logs[dStr];
+                dataConsistency.push(log ? log.score : 0);
+
+                if (new Date(year, month, d) <= new Date()) {
+                    possibleChecks += trackerData.template.length;
+                    if (log) {
+                        log.tasks.forEach(t => { if (t.status === 'executed' && trackerData.template.includes(t.name)) totalChecks++; });
+                    }
+                }
+            }
+
+            // A) Consistency Chart (Line)
+            const ctxCon = document.getElementById('chartConsistency');
+            if (ctxCon) {
+                if (charts.consistency) charts.consistency.destroy();
+                charts.consistency = new Chart(ctxCon, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Execution Score',
+                            data: dataConsistency,
+                            borderColor: '#00e5ff',
+                            backgroundColor: (ctx) => {
+                                const bg = ctx.chart.ctx.createLinearGradient(0, 0, 0, 300);
+                                bg.addColorStop(0, 'rgba(0, 229, 255, 0.4)');
+                                bg.addColorStop(1, 'rgba(0, 229, 255, 0)');
+                                return bg;
+                            },
+                            tension: 0.4,
+                            fill: true,
+                            pointRadius: 5,
+                            pointBackgroundColor: '#121218',
+                            pointBorderColor: '#00e5ff',
+                            pointBorderWidth: 2,
+                            pointHoverRadius: 8,
+                            pointHoverBackgroundColor: '#00e5ff',
+                            borderWidth: 3
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        interaction: { mode: 'index', intersect: false },
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                backgroundColor: 'rgba(10, 10, 15, 0.9)',
+                                titleFont: { size: 14, family: 'Outfit' },
+                                bodyFont: { size: 13, family: 'Inter' },
+                                padding: 12,
+                                borderColor: 'rgba(0, 229, 255, 0.3)',
+                                borderWidth: 1,
+                                callbacks: { label: (ctx) => `  Consistency Score: ${ctx.raw}%` }
+                            },
+                            zoom: {
+                                pan: { enabled: true, mode: 'x' },
+                                zoom: {
+                                    wheel: { enabled: true },
+                                    pinch: { enabled: true },
+                                    mode: 'x'
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                grid: { color: 'rgba(255,255,255,0.03)' },
+                                ticks: { color: 'rgba(255,255,255,0.4)', font: { size: 10 } }
+                            },
+                            y: {
+                                min: 0, max: 100,
+                                grid: { color: 'rgba(255,255,255,0.03)' },
+                                ticks: { color: 'rgba(255,255,255,0.4)', font: { size: 10 } }
+                            }
+                        }
+                    }
+                });
+                // Reset zoom on double click
+                ctxCon.ondblclick = () => charts.consistency.resetZoom();
+            }
+
+            // B) Win Rate (Doughnut)
+            const winRate = possibleChecks > 0 ? Math.round((totalChecks / possibleChecks) * 100) : 0;
+            const txtWin = document.getElementById('txtWinRate');
+            if (txtWin) txtWin.innerText = winRate + "%";
+
+            const ctxWin = document.getElementById('chartWinRate');
+            if (ctxWin) {
+                if (charts.winRate) charts.winRate.destroy();
+                charts.winRate = new Chart(ctxWin, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Done', 'Missed'],
+                        datasets: [{
+                            data: [winRate, 100 - winRate],
+                            backgroundColor: ['#ffd700', 'rgba(255,255,255,0.03)'], // Gold
+                            borderWidth: 0,
+                            hoverOffset: 12
+                        }]
+                    },
+                    options: {
+                        cutout: '80%',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        animation: { animateScale: true, duration: 1500 }
+                    }
+                });
+            }
+
+            // C) Top Habits
+            const scores = {};
+            trackerData.template.forEach(h => scores[h] = 0);
+            for (let d = 1; d <= daysInMonth; d++) {
+                const dStr = getDatestamp(new Date(year, month, d));
+                const log = trackerData.logs[dStr];
+                if (log) log.tasks.forEach(t => { if (t.status === 'executed' && scores[t.name] !== undefined) scores[t.name]++; });
+            }
+            const sorted = Object.entries(scores).sort((a, b) => b[1] - a[1]).slice(0, 6);
+            const listEl = document.getElementById('topHabitsList');
+            if (listEl) {
+                listEl.innerHTML = '';
+                sorted.forEach(([name, count]) => {
+                    const row = document.createElement('div');
+                    row.style.cssText = 'display:flex; justify-content:space-between; align-items:center; font-size:0.85rem; padding:0.8rem 1rem; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.05); border-radius:12px; transition:0.3s;';
+                    row.innerHTML = `<span style="color:#eee;">${name}</span> <span style="font-weight:700; color:var(--primary); background:rgba(255,215,0,0.1); padding:2px 10px; border-radius:20px; font-size:0.75rem;">${count} WINS</span>`;
+                    listEl.appendChild(row);
+                });
+            }
+
+            // D) Real-Time Performance Metrics
+            const todayStr = getDatestamp(new Date());
+            const todayLog = trackerData.logs[todayStr];
+            const currentFocus = todayLog ? todayLog.score : 0;
+
+            // Stress is inverse of focus + some random "noise" for real-time vibe
+            const currentStress = Math.max(0, Math.min(100, (100 - currentFocus) + (Math.random() * 10 - 5)));
+
+            // Recovery: Avg of last 5 days
+            let totalLast5 = 0;
+            let countLast5 = 0;
+            for (let i = 0; i < 5; i++) {
+                let dIdx = new Date(); dIdx.setDate(dIdx.getDate() - i);
+                let dStr = getDatestamp(dIdx);
+                if (trackerData.logs[dStr]) { totalLast5 += trackerData.logs[dStr].score; countLast5++; }
+            }
+            const currentRecovery = countLast5 > 0 ? Math.round(totalLast5 / countLast5) : 0;
+
+            // UI Update
+            const stressBar = document.getElementById('metricStressBar');
+            const focusBar = document.getElementById('metricFocusBar');
+            const recoveryBar = document.getElementById('metricRecoveryBar');
+
+            if (stressBar) { stressBar.style.height = currentStress + "%"; document.getElementById('metricStressVal').innerText = Math.round(currentStress) + "%"; }
+            if (focusBar) { focusBar.style.height = currentFocus + "%"; document.getElementById('metricFocusVal').innerText = currentFocus + "%"; }
+            if (recoveryBar) { recoveryBar.style.height = currentRecovery + "%"; document.getElementById('metricRecoveryVal').innerText = currentRecovery + "%"; }
+        }
+
+
+
+        // 3. RENDER ANALOG (Protocols & Mood)
+        function renderAnalog() {
+            const todayStr = getDatestamp(new Date());
+            const protocolData = trackerData.protocols[todayStr] || {};
+
+            const listEl = document.getElementById('protocolList');
+            if (listEl) {
+                listEl.innerHTML = '';
+                const protocols = ["No Snooze", "Read 10 Pages", "Clear Inbox", "Plan Tomorrow"];
+
+                protocols.forEach(p => {
+                    const isChecked = !!protocolData[p];
+                    const label = document.createElement('label');
+                    label.style.cssText = 'display: flex; gap: 0.5rem; align-items: center; cursor: pointer; padding: 0.2rem;';
+                    label.innerHTML = `
+                        <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleProtocol('${p}')">
+                        <span style="font-size: 0.9rem; color: ${isChecked ? 'var(--text-main)' : 'var(--text-secondary)'}; text-decoration: ${isChecked ? 'line-through' : 'none'}">${p}</span>
+                    `;
+                    listEl.appendChild(label);
+                });
+            }
+
+
+        }
+
+        async function toggleProtocol(name) {
+            const todayStr = getDatestamp(new Date());
+            if (!trackerData.protocols[todayStr]) trackerData.protocols[todayStr] = {};
+
+            const current = !!trackerData.protocols[todayStr][name];
+            trackerData.protocols[todayStr][name] = !current;
+
+            renderAnalog();
+            await fetch('/api/tracker/protocol', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ date: todayStr, protocols: trackerData.protocols[todayStr] })
+            });
+        }
+
+
+        // Initialize on Load
+        initTracker();
+
+        // 5. LIVE HUD JITTER (Visual Polish)
+        setInterval(() => {
+            const stressBar = document.getElementById('metricStressBar');
+            const stressVal = document.getElementById('metricStressVal');
+            if (stressBar && stressVal) {
+                const current = parseInt(stressVal.innerText);
+                const jitter = (Math.random() * 4 - 2); // +/- 2%
+                const newVal = Math.max(0, Math.min(100, current + jitter));
+                stressBar.style.height = newVal + "%";
+                stressVal.innerText = Math.round(newVal) + "%";
+            }
+        }, 3000); // Pulse every 3s
+
+        // AUTOMATION BOT
+        function botCmd(action) {
+            const consoleDiv = document.getElementById('botConsole');
+            const timestamp = new Date().toLocaleTimeString();
+            let msg = '';
+
+            if (action === 'clear') {
+                consoleDiv.innerHTML = '<div style="margin-bottom: 0.5rem;">[SYSTEM] Console Cleared.</div>';
+                return;
+            }
+
+            if (action === 'scan_jobs') msg = `[${timestamp}] Scanning LinkedIn/Indeed for "Business Analyst"... Found 12 matches.`;
+            if (action === 'optimize_resume') msg = `[${timestamp}] Analyzing keywords... ATS Score: 92/100.`;
+            if (action === 'auto_apply') msg = `[${timestamp}] Simulating application to Google... Success.`;
+
+            const div = document.createElement('div');
+            div.style.marginBottom = '0.5rem';
+            div.style.color = '#fff';
+            div.innerHTML = `<span style="color:var(--primary);">></span> ${msg}`;
+            consoleDiv.appendChild(div);
+            consoleDiv.scrollTop = consoleDiv.scrollHeight;
+        }
+
+        // ATTENDANCE CLOCK
+        function updateClock() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('en-US', { hour12: false });
+            const dateString = now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+            const clockEl = document.getElementById('digitalClock');
+            const dateEl = document.getElementById('currentDate');
+
+            if (clockEl) clockEl.innerText = timeString;
+            if (dateEl) dateEl.innerText = dateString;
+        }
+        setInterval(updateClock, 1000);
+        updateClock(); // init
+
+        function logAttendance(type) {
+            const log = document.getElementById('attendanceLog');
+            const li = document.createElement('li');
+            li.style.cssText = 'padding: 0.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.05); color: #fff; display:flex; justify-content:space-between;';
+            li.innerHTML = `<span>${type}</span> <span style="color:var(--text-secondary);">${new Date().toLocaleTimeString()}</span>`;
+
+            // Remove "No activity" text if present
+            if (log.children[0] && log.children[0].innerText.includes('No activity')) log.innerHTML = '';
+
+            log.prepend(li);
+        }
+
+        renderTasks();
+
+        // CALENDAR MODAL
+        function showAddEventModal() {
+            document.getElementById('eventModal').style.display = 'flex';
+        }
+
+    </script>
+</body>
+
+</html>
