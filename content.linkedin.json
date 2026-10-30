@@ -1,0 +1,170 @@
+{
+  "hero": {
+    "subtitle": "MBA (Business Analytics), Delhi School of Economics '27",
+    "title": "Portfolio &amp; <br><span class=\"gradient-text\">Wealth Analytics.</span>",
+    "desc": "Asset allocation, financial modelling and Python, applied to how families allocate and protect their wealth."
+  },
+  "about": {
+    "subtitle": "Engineer Turned Finance",
+    "title": "Srijan Agrawal <br><span class=\"highlight\">Manglik</span>",
+    "bio": "I started as an engineer (B.Tech IT, VIT) and moved into finance through numbers. At ZenStreet.ai, a bootstrapped startup I co-founded, I built a 12-month revenue and cash-flow model for strategic planning and cut CAC by 10% with Power BI insights. At AKSK and Associates I reviewed housing-finance loan files and identified NPAs, which was my first close look at credit risk.<br><br>Now, in my MBA in Business Analytics at Delhi School of Economics (2025-27), I'm focused on how families allocate and protect their wealth. I'm building a private-wealth mandate dashboard that goes from investment policy statement to asset allocation, rebalancing and a one-page client review.<br><br>Toolkit: financial modelling, Python, SQL, Power BI, KNIME. CAT 2024: 99.81 percentile in Quant."
+  },
+  "resume": {
+    "experience": [
+      {
+        "role": "Business Consulting Intern",
+        "company": "Virtusa · Chennai, Tamil Nadu · Remote",
+        "date": "Jun 2026 – Jul 2026",
+        "desc": ""
+      },
+      {
+        "role": "Co-Founder & Director, Finance & Strategy",
+        "company": "ZenStreet.ai · Noida, Uttar Pradesh",
+        "date": "Mar 2024 – Aug 2025",
+        "desc": "Bootstrapped startup. Owned client relationship management alongside finance and strategy: onboarded and managed client and partner relationships end to end. Worked with leadership, marketing and product teams to convert business goals into KPIs, dashboards and analytical models. Built a 12-month planning and forecasting model covering revenue streams, cash flows and growth scenarios to support strategic planning. Designed Power BI dashboards tracking user acquisition, ARPU, CAC and performance metrics, contributing to a 10% reduction in customer acquisition cost. Conducted scenario, sensitivity and impact analysis to evaluate growth strategies and improve budget variance reporting.",
+        "_id": "69c79c9739483dc6dca94a07"
+      },
+      {
+        "role": "Credit Risk Analyst Intern",
+        "company": "AKSK and Associates · Remote",
+        "date": "Jan 2024 – Feb 2024",
+        "desc": "Analysed financial statements and loan documentation from partners including Indiabulls, DHFL and Aadhar Housing Finance Ltd to assess credit risk and business viability. Verified KYC, income documentation and property records, identifying non-performing assets (NPAs) with 98% accuracy. Automated due diligence workflows, improving process efficiency by 15%. Communicated analytical findings to senior stakeholders to support informed lending decisions.",
+        "_id": "69c79c9739483dc6dca94a08"
+      },
+      {
+        "role": "Analyst Intern",
+        "company": "Radiant Hunters · Vellore, Tamil Nadu · Remote",
+        "date": "Jul 2023 – Dec 2023",
+        "desc": "Developed FP&A and revenue models to support long-term financial planning. Analysed revenue drivers and cost structures, enhancing forecasting accuracy by 12%. Conducted ROI analysis for marketing campaigns, leading to a 15% increase in brand-driven revenue. Ensured compliance with financial reporting standards and internal performance reporting.",
+        "_id": "69c79c9739483dc6dca94a09"
+      }
+    ],
+    "education": [
+      {
+        "degree": "MBA (Business Analytics)",
+        "institute": "Delhi School of Economics",
+        "year": "Aug 2025 – Jun 2027",
+        "score": "Pursuing",
+        "_id": "69c79c9739483dc6dca94a0d"
+      },
+      {
+        "degree": "B.Tech (Information Technology)",
+        "institute": "Vellore Institute of Technology",
+        "year": "2019 – 2023",
+        "score": "77.40%",
+        "_id": "69c79c9739483dc6dca94a0e",
+        "activities": "Activities: VITrendz (SQL Associate, 2022-23); HEARTS Club (Marketing Associate, 2021); SME-VIT (Social Media Manager and Technical Team Member, 2020-21)"
+      }
+    ],
+    "skills": [
+      "Financial Modeling",
+      "Python",
+      "Credit Risk Management",
+      "Business Analytics",
+      "Financial Planning and Analysis (FP&A)",
+      "Financial Forecasting",
+      "Planning, Budgeting & Forecasting",
+      "Scenario Analysis",
+      "Regression Analysis",
+      "Financial Analysis",
+      "Financial Reporting",
+      "Performance Reporting",
+      "Due Diligence",
+      "Strategic Planning",
+      "Business Analysis",
+      "KPI Dashboards",
+      "Microsoft Power BI",
+      "Excel Dashboards",
+      "SQL",
+      "KNIME",
+      "Report Automation",
+      "Process Improvement Analysis",
+      "Six Sigma",
+      "Data Science",
+      "Analytical Skills",
+      "Languages: English, Hindi"
+    ],
+    "projects": [
+      {
+        "title": "Private-wealth mandate dashboard (In progress)",
+        "desc": "Goes from investment policy statement to asset allocation, rebalancing and a one-page client review.",
+        "tags": [
+          "In progress",
+          "Asset Allocation",
+          "Wealth Analytics",
+          "Python"
+        ]
+      }
+    ]
+  },
+  "_id": "69c79c9739483dc6dca94a06",
+  "certifications": [
+    {
+      "name": "Bloomberg Finance Fundamentals",
+      "issuer": "Bloomberg · Issued Nov 2025 · Credential ID 4ynZk3zeDYiLSjLcFqxuRJe8",
+      "icon": "fa-solid fa-sack-dollar",
+      "style": "border-color: rgba(212, 175, 55, 0.3); background: rgba(212, 175, 55, 0.05);"
+    },
+    {
+      "name": "CFI Corporate Finance Foundations Professional Certificate",
+      "issuer": "Corporate Finance Institute (CFI) · Issued Jun 2026",
+      "icon": "fa-solid fa-building-columns",
+      "style": ""
+    },
+    {
+      "name": "Corporate Finance Foundations",
+      "issuer": "LinkedIn · Issued Apr 2025",
+      "icon": "fa-brands fa-linkedin",
+      "style": ""
+    },
+    {
+      "name": "Lean Six Sigma Green Belt",
+      "issuer": "KPMG · Issued Jan 2026",
+      "icon": "fa-solid fa-trophy",
+      "style": ""
+    },
+    {
+      "name": "KNIME Certification: L1 Examination",
+      "issuer": "KNIME · Issued Dec 2025",
+      "icon": "fa-solid fa-database",
+      "style": ""
+    },
+    {
+      "name": "Python Data Associate",
+      "issuer": "DataCamp · Issued Dec 2025 · Credential ID PDA0016431575114",
+      "icon": "fa-brands fa-python",
+      "style": ""
+    },
+    {
+      "name": "Intermediate Python",
+      "issuer": "DataCamp · Issued Nov 2025",
+      "icon": "fa-brands fa-python",
+      "style": ""
+    },
+    {
+      "name": "CAT 2024: 99.81 percentile in Quant",
+      "issuer": "Common Admission Test",
+      "icon": "fa-solid fa-chart-line",
+      "style": "border-color: rgba(212, 175, 55, 0.3); background: rgba(212, 175, 55, 0.05);"
+    },
+    {
+      "name": "DevOps on AWS: Code, Build, and Test",
+      "issuer": "Amazon Web Services (AWS) · Issued Jun 2022 · Credential ID W434EEEXGV3W",
+      "icon": "fa-brands fa-aws",
+      "style": ""
+    },
+    {
+      "name": "DevOps on AWS: Operate and Monitor",
+      "issuer": "Amazon Web Services (AWS) · Issued Jun 2022 · Credential ID LJYF66VNFX7V",
+      "icon": "fa-brands fa-aws",
+      "style": ""
+    },
+    {
+      "name": "DevOps on AWS: Release and Deploy",
+      "issuer": "Amazon Web Services (AWS) · Issued Jun 2022 · Credential ID LZSN56RUGFCE",
+      "icon": "fa-brands fa-aws",
+      "style": ""
+    }
+  ],
+  "__v": 0
+}

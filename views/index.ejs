@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Srijan Agrawal Manglik | Business Analyst & Data Analytics Professional</title>
+    <title>Srijan Agrawal Manglik | Portfolio &amp; Wealth Analytics | MBA, Delhi School of Economics '27</title>
+    <meta name="description" content="Srijan Agrawal Manglik: MBA (Business Analytics), Delhi School of Economics '27. Portfolio and wealth analytics, asset allocation, financial modelling and Python.">
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -44,12 +45,12 @@
         <div class="container">
             <br><br>
             <span class="hero-subtitle">
-                <%= content.hero ? content.hero.subtitle : 'Business Analyst & MBA Candidate' %>
+                <%= content.hero ? content.hero.subtitle : 'MBA (Business Analytics), Delhi School of Economics \'27' %>
             </span>
             <h1 class="hero-title"><%- content.hero ? content.hero.title
                     : 'Precision in <br><span class="gradient-text">Every Insight.</span>' %></h1>
             <p class="hero-description">
-                <%= content.hero ? content.hero.desc : 'Transforming data into actionable business insights...' %>
+                <%= content.hero ? content.hero.desc : 'Portfolio & wealth analytics | Asset allocation, financial modelling, Python' %>
             </p>
             <a href="#experience" class="btn">Explore Journey</a>
         </div>
@@ -115,9 +116,11 @@
                             <div class="timeline-company">
                                 <%= exp.company %>
                             </div>
+                            <% if (exp.desc) { %>
                             <p class="timeline-desc">
                                 <%= exp.desc %>
                             </p>
+                            <% } %>
                         </div>
                         <% }) %>
                             <% } %>
@@ -156,8 +159,11 @@
                                 <%= edu.institute %>
                             </p>
                             <p style="color: #666;">
-                                <%= edu.year %> | <%= edu.score %>
+                                <%= edu.year %><% if (edu.score) { %> | <%= edu.score %><% } %>
                             </p>
+                            <% if (edu.activities) { %>
+                            <p style="color: #888; font-size: 0.9rem; margin-top: 0.5rem;"><%= edu.activities %></p>
+                            <% } %>
                         </div>
                         <% }) %>
                             <% } %>
@@ -219,7 +225,8 @@
     <!-- Contact Section -->
     <section id="contact" class="section">
         <div class="container" style="text-align: center;">
-            <p style="font-size: 1.5rem; margin-bottom: 2rem;">Ready to turn data into actionable business insights?</p>
+            <p style="font-size: 1.5rem; margin-bottom: 2rem;">Always happy to talk portfolios, asset allocation and wealth analytics.</p>
+            <p style="margin-bottom: 2rem; color: #aaa;"><a href="mailto:srijanagrawalmanglik@gmail.com" style="color: var(--gold);"><i class="fas fa-envelope"></i> srijanagrawalmanglik@gmail.com</a> &nbsp;|&nbsp; <a href="https://www.linkedin.com/in/srijanam/" target="_blank" rel="noopener" style="color: var(--gold);"><i class="fab fa-linkedin"></i> linkedin.com/in/srijanam</a> &nbsp;|&nbsp; <i class="fas fa-location-dot"></i> Delhi</p>
             <form action="/contact" method="POST" style="max-width: 500px; margin: 0 auto; text-align: left;">
                 <div style="margin-bottom: 1rem;">
                     <input type="text" name="name" placeholder="Your Name" required
@@ -242,7 +249,7 @@
 
     <footer class="footer">
         <div class="container">
-            <p>&copy; 2025 Srijan Agrawal Manglik.</p>
+            <p>&copy; 2026 Srijan Agrawal Manglik.</p>
         </div>
     </footer>
 
