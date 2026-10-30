@@ -34,7 +34,7 @@ const ContentSchema = new mongoose.Schema({
     about: { subtitle: String, title: String, bio: String },
     resume: {
         experience: [{ role: String, company: String, date: String, desc: String }],
-        education: [{ degree: String, institute: String, year: String, score: String }],
+        education: [{ degree: String, institute: String, year: String, score: String, activities: String }],
         skills: [String],
         projects: [ProjectSchema] // Embedded or referenced? Using embedded matching JSON
     },
